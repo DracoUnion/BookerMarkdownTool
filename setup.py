@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import setuptools
-import BookerWikiTool
+import BookerMarkdownTool
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -11,11 +11,11 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
     install_requires = fh.read().splitlines()
 
 setuptools.setup(
-    name="BookerWikiTool",
-    version=BookerWikiTool.__version__,
-    url="https://github.com/apachecn/BookerWikiTool",
-    author=BookerWikiTool.__author__,
-    author_email=BookerWikiTool.__email__,
+    name="BookerMarkdownTool",
+    version=BookerMarkdownTool.__version__,
+    url="https://github.com/apachecn/BookerMarkdownTool",
+    author=BookerMarkdownTool.__author__,
+    author_email=BookerMarkdownTool.__email__,
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Console",
@@ -50,8 +50,8 @@ setuptools.setup(
     python_requires=">=3.6",
     entry_points={
         'console_scripts': [
-            "BookerWikiTool=BookerWikiTool.__main__:main",
-            "wiki-tool=BookerWikiTool.__main__:main",
+            "BookerMarkdownTool=BookerMarkdownTool.__main__:main",
+            "wiki-tool=BookerMarkdownTool.__main__:main",
         ],
     },
     packages=setuptools.find_packages(),
