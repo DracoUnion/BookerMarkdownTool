@@ -51,7 +51,7 @@ setuptools.setup(
     entry_points={
         'console_scripts': [
             "BookerMarkdownTool=BookerMarkdownTool.__main__:main",
-            "wiki-tool=BookerMarkdownTool.__main__:main",
+            "md-tool=BookerMarkdownTool.__main__:main",
         ],
     },
     packages=setuptools.find_packages(),
