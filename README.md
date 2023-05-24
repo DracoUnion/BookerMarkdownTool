@@ -1,4 +1,4 @@
-# BookerWikiTool
+# BookerMarkdownTool
 
 iBooker/ApacheCN 知识库抓取工具
 
@@ -7,13 +7,13 @@ iBooker/ApacheCN 知识库抓取工具
 通过pip（推荐）：
 
 ```
-pip install BookerWikiTool
+pip install BookerMarkdownTool
 ```
 
 从源码安装：
 
 ```
-pip install git+https://github.com/apachecn/BookerWikiTool
+pip install git+https://github.com/DracoUnion/BookerMarkdownTool
 ```
 
 需要 Node 和`to-markdown`包。
@@ -21,7 +21,7 @@ pip install git+https://github.com/apachecn/BookerWikiTool
 ## 使用说明
 
 ```
-wiki-tool -h
+md-tool -h
 ```
 
 ## 协议
