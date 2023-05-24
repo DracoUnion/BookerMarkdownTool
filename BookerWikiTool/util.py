@@ -26,7 +26,6 @@ headers = {
     'Referer': 'https://www.bilibili.com/',
 }
 
-
 def d(name):
     return path.join(DIR, name)
 

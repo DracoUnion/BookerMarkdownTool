@@ -10,12 +10,43 @@ from os import path
 from readability import Document
 from EpubCrawler.img import process_img
 from datetime import datetime
+from multiprocessing import Pool
+import copy
 
 
-RE_YAML_META = r'<!--yml([\s\S]+?)-->'
 RE_IFRAME = r'<iframe[^>]*src="(.+?)"[^>]*>'
 RE_IFRAME_ALL = r'</?iframe[^>]*>'
 RE_IFRAME_REPL = r'<br/><br/><a href="\1">\1</a><br/><br/>'
+
+def tomd_dir(args):
+    dir = args.fname
+    fnames = os.listdir(dir)
+    pool = Pool(args.threads)
+    for fname in fnames:
+        args = copy.deepcopy(args)
+        args.fname = path.join(dir, fname)
+        # tomd_file(args)
+        pool.apply_async(tomd_file, [args])
+    pool.close()
+    pool.join()
+
+# @safe()
+def tomd_file(args):
+    if not args.fname.endswith('.html'):
+        print('请提供 HTML 文件')
+        return
+    print(args.fname)
+    html = open(args.fname, encoding='utf8').read()
+    md = tomd(html)
+    ofname = re.sub(r'\.html$', '', args.fname) + '.md'
+    open(ofname, 'w', encoding='utf8').write(md)
+
+def tomd_handle(args):
+    if path.isdir(args.fname):
+        tomd_dir(args)
+    else:
+        tomd_file(args)
+
 
 def tomd(html):
     # 处理 IFRAME
