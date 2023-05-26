@@ -93,14 +93,14 @@ def main():
     rec_pre_parser.add_argument("fname", help="file name")
     rec_pre_parser.set_defaults(func=recover_pre_handler)
 
-    md_align_parser = subparsers.add_parser("md-align", help="align en and zh md file")
-    md_align_parser.add_argument("en", help="en file name")
-    md_align_parser.add_argument("zh", help="zh file name")
-    md_align_parser.set_defaults(func=md_align_handler)
+    align_parser = subparsers.add_parser("align", help="align en and zh md file")
+    align_parser.add_argument("en", help="en file name")
+    align_parser.add_argument("zh", help="zh file name")
+    align_parser.set_defaults(func=align_handler)
     
-    totrans_yaml_parser = subparsers.add_parser("totrans-yaml", help="md to totrans yaml")
-    totrans_yaml_parser.add_argument("fname", help="en file name")
-    totrans_yaml_parser.set_defaults(func=make_totrans_yaml)
+    make_totrans_parser = subparsers.add_parser("make-totrans", help="md to totrans yaml")
+    make_totrans_parser.add_argument("fname", help="en file name")
+    make_totrans_parser.set_defaults(func=make_totrans_handler)
     
     args = parser.parse_args()
     args.func(args)

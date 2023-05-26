@@ -121,7 +121,7 @@ def make_align(md1, md2):
     return res
     
     
-def md_align_handler(args):
+def align_handler(args):
     fname1 = args.en
     fname2 = args.zh
     if not fname1.endswith('.md') or \
@@ -135,7 +135,7 @@ def md_align_handler(args):
         yaml.safe_dump(res, allow_unicode=True))
     
 
-def make_totrans_yaml(args):
+def make_totrans_handler(args):
     fname = args.fname
     if not fname.endswith('.md'):
        raise ValueError('请提供 MD 文件！')
