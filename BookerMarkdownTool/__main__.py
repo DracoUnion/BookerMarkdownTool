@@ -98,6 +98,10 @@ def main():
     md_align_parser.add_argument("zh", help="zh file name")
     md_align_parser.set_defaults(func=md_align_handler)
     
+    totrans_yaml_parser = subparsers.add_parser("totrans-yaml", help="md to totrans yaml")
+    totrans_yaml_parser.add_argument("fname", help="en file name")
+    totrans_yaml_parser.set_defaults(func=make_totrans_yaml)
+    
     args = parser.parse_args()
     args.func(args)
 

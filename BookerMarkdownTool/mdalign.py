@@ -134,3 +134,20 @@ def md_align_handler(args):
     open(ofname, 'w', encoding='utf8').write(
         yaml.safe_dump(res, allow_unicode=True))
     
+
+def make_totrans_yaml(args):
+    fname = args.fname
+    if not fname.endswith('.md')
+       raise ValueError('请提供 MD 文件！')
+    md = open(fname, encoding='utf8').read()
+    res = proc_md(md)
+    res = [{
+        'en': r['line'], 
+        'pref': r['pref'],
+    } for r in res]
+    ofname = re.sub(r'\.\w+$', '', fname) + '.yaml'
+    open(ofname, 'w', encoding='utf8').write(
+        yaml.safe_dump(res, allow_unicode=True))
+
+
+
