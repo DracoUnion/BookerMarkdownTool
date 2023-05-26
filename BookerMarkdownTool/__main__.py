@@ -28,7 +28,7 @@ from .opti import *
 from .ren import *
 from .summary import *
 from .tomd import *
-from .mdalign import *
+from .align import *
     
 def main():
     parser = argparse.ArgumentParser(prog="BookerMarkdownTool", description="iBooker WIKI tool", formatter_class=argparse.RawDescriptionHelpFormatter)
