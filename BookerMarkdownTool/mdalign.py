@@ -137,7 +137,7 @@ def md_align_handler(args):
 
 def make_totrans_yaml(args):
     fname = args.fname
-    if not fname.endswith('.md')
+    if not fname.endswith('.md'):
        raise ValueError('请提供 MD 文件！')
     md = open(fname, encoding='utf8').read()
     res = proc_md(md)
