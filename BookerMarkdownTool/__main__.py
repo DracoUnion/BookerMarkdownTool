@@ -29,6 +29,7 @@ from .ren import *
 from .summary import *
 from .tomd import *
 from .align import *
+from .split import *
     
 def main():
     parser = argparse.ArgumentParser(prog="BookerMarkdownTool", description="iBooker WIKI tool", formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -101,6 +102,10 @@ def main():
     make_totrans_parser = subparsers.add_parser("make-totrans", help="md to totrans yaml")
     make_totrans_parser.add_argument("fname", help="en file name")
     make_totrans_parser.set_defaults(func=make_totrans_handler)
+    
+    split_parser = subparsers.add_parser("split", help="split md or html")
+    split_parser.add_argument("fname", help="file name")
+    split_parser.set_defaults(func=split)
     
     args = parser.parse_args()
     args.func(args)
