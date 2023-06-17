@@ -1,5 +1,5 @@
 
-def split(args)
+def split(args):
     fname  = args.fname
     if not fname.endswith('.md') and \
            fname.endswith('.html'):
