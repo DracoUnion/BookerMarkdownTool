@@ -5,7 +5,7 @@ def split(args):
            fname.endswith('.html'):
         print('请提供 MD 或者 HTML 文件')
         return
-    cont = open(fname, encoding='utf8')
+    cont = open(fname, encoding='utf8').read()
     res = cont.split('<!-- split -->')
     l = len(str(len(res)))
     ext = fname.split('.')[-1]
