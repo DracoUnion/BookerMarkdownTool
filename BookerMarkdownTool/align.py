@@ -134,6 +134,22 @@ def align_handler(args):
     open(ofname, 'w', encoding='utf8').write(
         yaml.safe_dump(res, allow_unicode=True))
     
+def align_dir_handler(args):
+    dir1 = args.en
+    dir2 = args.zh
+    if not path.isdir(dir1) or \
+        not path.isdir(dir2):
+        raise ValueError('请提供两个目录！')
+    fnames = [f for f in os.listdir(dir1) if f.endswith('.md')]
+    for f in fnames:
+        fen = path.join(dir1, f)
+        fzh = path.join(dir2, f)
+        if not path.isfile(fzh):
+            continue
+        args.en = fen
+        args.zh = fzh
+        align_handler(args)
+
 
 def make_totrans_handler(args):
     fname = args.fname
