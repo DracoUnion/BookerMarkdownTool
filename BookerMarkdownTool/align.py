@@ -51,7 +51,7 @@ def ext_prefs(line):
         if not pref: break
         prefs.append(pref)
     return {
-        'pref': prefs,
+        'prefs': prefs,
         'line': line.strip(),
     }
 
@@ -65,7 +65,7 @@ def proc_md(md):
     
 def find_next_pref(r, st, p):
     for i in range(st, len(r)):
-        if r[i]['pref'] == p:
+        if r[i]['prefs'] == p:
             return i
     return len(r)
     
@@ -75,12 +75,12 @@ def make_align(md1, md2):
     res = []
     while idx1 < len(r1) and idx2 < len(r2):
         l1, l2 = r1[idx1], r2[idx2]
-        p1, p2 = l1['pref'], l2['pref']
+        p1, p2 = l1['prefs'], l2['prefs']
         if p1 == p2:
             res.append({
                 'en': l1['line'],
                 'zh': l2['line'],
-                'pref': p1,
+                'prefs': p1,
             })
             idx1 += 1
             idx2 += 1
@@ -92,7 +92,7 @@ def make_align(md1, md2):
                 res.append({
                     'en': r1[idx1]['line'],
                     'zh': '',
-                    'pref': r1[idx1]['pref'],
+                    'prefs': r1[idx1]['prefs'],
                 })
                 idx1 += 1
         else:
@@ -100,7 +100,7 @@ def make_align(md1, md2):
                 res.append({
                     'en': '',
                     'zh': r2[idx2]['line'],
-                    'pref': r2[idx2]['pref'],
+                    'prefs': r2[idx2]['prefs'],
                 })
                 idx2 += 1
             
@@ -108,14 +108,14 @@ def make_align(md1, md2):
         res.append({
             'en': r1[idx1]['line'],
             'zh': '',
-            'pref': r1[idx1]['pref'],
+            'prefs': r1[idx1]['prefs'],
         })
         idx1 += 1
     while idx2 < len(r2):
         res.append({
             'en': '',
             'zh': r2[idx2]['line'],
-            'pref': r2[idx2]['pref'],
+            'prefs': r2[idx2]['prefs'],
         })
         idx2 += 1
     return res
@@ -143,7 +143,7 @@ def make_totrans_handler(args):
     res = proc_md(md)
     res = [{
         'en': r['line'], 
-        'pref': r['pref'],
+        'prefs': r['prefs'],
     } for r in res]
     ofname = re.sub(r'\.\w+$', '', fname) + '.yaml'
     open(ofname, 'w', encoding='utf8').write(
