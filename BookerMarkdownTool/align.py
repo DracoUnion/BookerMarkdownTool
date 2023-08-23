@@ -16,6 +16,7 @@ PREF_H6 = r'#{6}\x20+'
 PREF_BQ = r'>\x20'
 TYPE_TB = r'^\|\x20.*?\x20\|$'
 TYPE_PRE = r'^\[PRE\d+\]$'
+TYPE_IMG = r'^!\[.*?\]\(.*?\)$'
 
 PREF_MAP = {
     'PREF_IND': PREF_IND, 
@@ -33,6 +34,7 @@ PREF_MAP = {
 TYPE_MAP = {
     'TYPE_TB': TYPE_TB,
     'TYPE_PRE': TYPE_PRE,
+    'TYPE_IMG': TYPE_IMG,
 }
 
 
