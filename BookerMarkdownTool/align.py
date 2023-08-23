@@ -14,8 +14,8 @@ PREF_H4 = r'#{4}\x20+'
 PREF_H5 = r'#{5}\x20+'
 PREF_H6 = r'#{6}\x20+'
 PREF_BQ = r'>\x20'
-PREF_TB = r'\|\x20+'
-SUFF_TB = r'\x20+\|'
+TYPE_TB = r'^\|\x20.*?\x20\|$'
+TYPE_PRE = r'^\[PRE\d+\]$'
 
 PREF_MAP = {
     'PREF_IND': PREF_IND, 
@@ -28,6 +28,11 @@ PREF_MAP = {
     'PREF_H5': PREF_H5, 
     'PREF_H6': PREF_H6, 
     'PREF_BQ': PREF_BQ
+}
+
+TYPE_MAP = {
+    'TYPE_TB': TYPE_TB,
+    'TYPE_PRE': TYPE_PRE,
 }
 
 
@@ -43,6 +48,12 @@ def match_one_pref(line):
         return tp, line
     return None, line
         
+def match_type(line):
+    for tp, rgx in TYPE_MAP.items():
+        m = re.search(rgx, line)
+        if m: return tp
+    return 'TYPE_NORMAL'
+        
 
 def ext_prefs(line):
     prefs = []
@@ -50,9 +61,11 @@ def ext_prefs(line):
         pref, line = match_one_pref(line)
         if not pref: break
         prefs.append(pref)
+    line = line.strip()
     return {
         'prefs': prefs,
-        'line': line.strip(),
+        'line': line,
+        'type': match_type(line)
     }
 
 def proc_md(md):
@@ -63,9 +76,9 @@ def proc_md(md):
     res = [ext_prefs(l) for l in lines]
     return res
     
-def find_next_pref(r, st, p):
+def find_next_pref(r, st, p, t):
     for i in range(st, len(r)):
-        if r[i]['prefs'] == p:
+        if r[i]['prefs'] == p and r[i]['type'] == t:
             return i
     return len(r)
     
@@ -76,23 +89,26 @@ def make_align(md1, md2):
     while idx1 < len(r1) and idx2 < len(r2):
         l1, l2 = r1[idx1], r2[idx2]
         p1, p2 = l1['prefs'], l2['prefs']
-        if p1 == p2:
+        t1, t2 = l1['type'], l2['type']
+        if p1 == p2 and t1 == t2:
             res.append({
                 'en': l1['line'],
                 'zh': l2['line'],
                 'prefs': p1,
+                'type': t1,
             })
             idx1 += 1
             idx2 += 1
             continue
-        idx1n = find_next_pref(r1, idx1 + 1, p2)
-        idx2n = find_next_pref(r2, idx2 + 1, p1)
+        idx1n = find_next_pref(r1, idx1 + 1, p2, t2)
+        idx2n = find_next_pref(r2, idx2 + 1, p1, t1)
         if idx1n - idx1 < idx2n - idx2:
             while idx1 < idx1n:
                 res.append({
                     'en': r1[idx1]['line'],
                     'zh': '',
                     'prefs': r1[idx1]['prefs'],
+                    'type': r1[idx1]['type'],
                 })
                 idx1 += 1
         else:
@@ -101,6 +117,7 @@ def make_align(md1, md2):
                     'en': '',
                     'zh': r2[idx2]['line'],
                     'prefs': r2[idx2]['prefs'],
+                    'type': r2[idx2]['type'],
                 })
                 idx2 += 1
             
@@ -109,6 +126,7 @@ def make_align(md1, md2):
             'en': r1[idx1]['line'],
             'zh': '',
             'prefs': r1[idx1]['prefs'],
+            'type': r1[idx1]['type'],
         })
         idx1 += 1
     while idx2 < len(r2):
@@ -116,6 +134,7 @@ def make_align(md1, md2):
             'en': '',
             'zh': r2[idx2]['line'],
             'prefs': r2[idx2]['prefs'],
+            'type': r2[idx2]['type'],
         })
         idx2 += 1
     return res
