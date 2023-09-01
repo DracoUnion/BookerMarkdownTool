@@ -19,6 +19,7 @@ def glmcpp_code_comment(code, args):
     cmd = ['chatglm-cpp', '-p', args.prompt + code, '-m', args.model]
     print(f'cmd: {cmd}')
     text = subp.Popen(cmd, stdout=subp.PIPE, stderr=subp.PIPE, shell=True).communicate()[0]
+    print(text)
     return text
 
 def code_comment_handle(args):
