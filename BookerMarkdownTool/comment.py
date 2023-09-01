@@ -47,6 +47,7 @@ def code_comment_file(args):
     print(fname)
     lines = open(fname, encoding='utf8').read()
     chunks = group_lines(lines, args.limit)
-    res = [glmcpp_code_comment(c, args) for c in chunks]
+    res = '\n'.join([glmcpp_code_comment(c, args) for c in chunks])
+    md = f'#\x20`{fname}`代码注释\n\n```\n{res}\n```'
     ofname = fname + '.md'
-    open(ofname, 'w', encoding='utf8').write('\n'.join(res))
+    open(ofname, 'w', encoding='utf8').write(md)
