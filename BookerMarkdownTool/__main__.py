@@ -117,7 +117,7 @@ def main():
     comment_parser.add_argument("fname", help="file or dir name")
     comment_parser.add_argument("-l", "--limit", type=int, default=4000, help="text limit for signle QA")
     comment_parser.add_argument("-p", "--prompt", default=CODE_COMMENT_PROMPT, help="prompt used for code comment")
-    comment_parser.add_argument("-m", "--model", default='chatglm-ggml-6b-q4_0', help="model name or path")
+    comment_parser.add_argument("-m", "--model", default='chatglm2-ggml-6b-q4_0', help="model name or path")
     comment_parser.set_defaults(func=code_comment_handle)
 
     args = parser.parse_args()
