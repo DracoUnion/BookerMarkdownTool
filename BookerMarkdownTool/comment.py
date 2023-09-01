@@ -18,9 +18,13 @@ def group_lines(lines, limit):
 def glmcpp_code_comment(code, args):
     cmd = ['chatglm', '-p', args.prompt + code, '-m', args.model]
     print(f'cmd: {cmd}')
-    text = subp.Popen(
+    r = subp.Popen(
             cmd, stdout=subp.PIPE, stderr=subp.PIPE, shell=True
-    ).communicate()[0].decode('utf8')
+    ).communicate()
+    if r[1] is not None:
+        errmsg = r[1].decode('utf8')
+        raise Exception(errmsg)
+    text = r[0].decode('utf8')
     print(text)
     return text
 
