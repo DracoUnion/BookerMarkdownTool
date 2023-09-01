@@ -16,7 +16,7 @@ def group_lines(lines, limit):
     return res
         
 def glmcpp_code_comment(code, args):
-    cmd = ['chatglm-cpp', '-p', args.prompt + code, '-m', args.model]
+    cmd = ['chatglm', '-p', args.prompt + code, '-m', args.model]
     print(f'cmd: {cmd}')
     text = subp.Popen(
             cmd, stdout=subp.PIPE, stderr=subp.PIPE, shell=True
