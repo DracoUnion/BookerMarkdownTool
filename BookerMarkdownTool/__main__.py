@@ -30,6 +30,7 @@ from .summary import *
 from .tomd import *
 from .align import *
 from .split import *
+from .comment import *
     
 def main():
     parser = argparse.ArgumentParser(prog="BookerMarkdownTool", description="iBooker WIKI tool", formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -112,6 +113,11 @@ def main():
     split_parser.add_argument("fname", help="file name")
     split_parser.set_defaults(func=split)
     
+    comment_parser = subparsers.add_parser("code-comment", help="add comment to code")
+    comment_parser.add_argument("fname", help="file or dir name")
+    comment_parser.add_argument("-l", "--prompt", default=CODE_COMMENT_PROMPT, help="prompt used for code comment")
+    comment_parser.set_defaults(func=code_comment_handle)
+
     args = parser.parse_args()
     args.func(args)
 

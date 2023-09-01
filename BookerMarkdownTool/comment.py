@@ -22,9 +22,9 @@ def glmcpp_code_comment(code, args):
     return text
 
 def code_comment_handle(args):
-    glm_path = find_cmd_path('chatglm-cpp')
+    glm_path = find_cmd_path('chatglm')
     if not glm_path:
-        print('请下载 chatglm-cpp 并将目录添加到 $PATH 中')
+        print('请下载 chatglm.cpp 并将目录添加到 $PATH 中')
         return
     if re.search(r'^[\w\-]+$', args.model):
         args.model = path.join(glm_path, 'models', args.model + '.bin')
