@@ -12,13 +12,15 @@ def group_lines(lines, limit):
         if len(res[-1]) + len(l) + 1 > limit:
             res.append([l])
         else:
-            res[-1] += '\m' + l
+            res[-1] += '\n' + l
     return res
         
 def glmcpp_code_comment(code, args):
     cmd = ['chatglm-cpp', '-p', args.prompt + code, '-m', args.model]
     print(f'cmd: {cmd}')
-    text = subp.Popen(cmd, stdout=subp.PIPE, stderr=subp.PIPE, shell=True).communicate()[0]
+    text = subp.Popen(
+            cmd, stdout=subp.PIPE, stderr=subp.PIPE, shell=True
+    ).communicate()[0].decode('utf8')
     print(text)
     return text
 
@@ -46,7 +48,7 @@ def code_comment_dir(args):
 def code_comment_file(args):
     fname = args.fname
     print(fname)
-    lines = open(fname, encoding='utf8').read()
+    lines = open(fname, encoding='utf8').read().split('\n')
     chunks = group_lines(lines, args.limit)
     res = '\n'.join([glmcpp_code_comment(c, args) for c in chunks])
     md = f'#\x20`{fname}`代码注释\n\n```\n{res}\n```'
