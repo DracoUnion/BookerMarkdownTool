@@ -23,7 +23,7 @@ def glmcpp_code_comment(code, args):
     r = subp.Popen(
             cmd, stdout=subp.PIPE, stderr=subp.PIPE, shell=True
     ).communicate()
-    if r[1]:
+    if not r[0]:
         errmsg = r[1].decode('utf8')
         raise Exception(errmsg)
     text = r[0].decode('utf8')
