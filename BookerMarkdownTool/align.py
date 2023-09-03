@@ -57,7 +57,7 @@ def match_type(line):
     return 'TYPE_NORMAL'
         
 
-def ext_prefs(line):
+def line2block(line):
     prefs = []
     while True:
         pref, line = match_one_pref(line)
@@ -70,13 +70,13 @@ def ext_prefs(line):
         'type': match_type(line)
     }
 
-def proc_md(md):
+def parse_blocks(md):
     lines = md.split('\n')
     lines = [l.strip() for l in lines]
     lines = list(filter(None, lines))
     
-    res = [ext_prefs(l) for l in lines]
-    return res
+    blocks = [line2block(l) for l in lines]
+    return blocks
     
 def find_next_pref(r, st, p, t):
     for i in range(st, len(r)):
@@ -85,11 +85,11 @@ def find_next_pref(r, st, p, t):
     return len(r)
     
 def make_align(md1, md2):
-    r1, r2 = proc_md(md1), proc_md(md2)
+    bl1, bl2 = parse_blocks(md1), parse_blocks(md2)
     idx1, idx2 = 0, 0
     res = []
-    while idx1 < len(r1) and idx2 < len(r2):
-        l1, l2 = r1[idx1], r2[idx2]
+    while idx1 < len(bl1) and idx2 < len(bl2):
+        l1, l2 = bl1[idx1], bl2[idx2]
         p1, p2 = l1['prefs'], l2['prefs']
         t1, t2 = l1['type'], l2['type']
         if p1 == p2 and t1 == t2:
@@ -102,41 +102,41 @@ def make_align(md1, md2):
             idx1 += 1
             idx2 += 1
             continue
-        idx1n = find_next_pref(r1, idx1 + 1, p2, t2)
-        idx2n = find_next_pref(r2, idx2 + 1, p1, t1)
+        idx1n = find_next_pref(bl1, idx1 + 1, p2, t2)
+        idx2n = find_next_pref(bl2, idx2 + 1, p1, t1)
         if idx1n - idx1 < idx2n - idx2:
             while idx1 < idx1n:
                 res.append({
-                    'en': r1[idx1]['line'],
+                    'en': bl1[idx1]['line'],
                     'zh': '',
-                    'prefs': r1[idx1]['prefs'],
-                    'type': r1[idx1]['type'],
+                    'prefs': bl1[idx1]['prefs'],
+                    'type': bl1[idx1]['type'],
                 })
                 idx1 += 1
         else:
             while idx2 < idx2n:
                 res.append({
                     'en': '',
-                    'zh': r2[idx2]['line'],
-                    'prefs': r2[idx2]['prefs'],
-                    'type': r2[idx2]['type'],
+                    'zh': bl2[idx2]['line'],
+                    'prefs': bl2[idx2]['prefs'],
+                    'type': bl2[idx2]['type'],
                 })
                 idx2 += 1
             
-    while idx1 < len(r1):
+    while idx1 < len(bl1):
         res.append({
-            'en': r1[idx1]['line'],
+            'en': bl1[idx1]['line'],
             'zh': '',
-            'prefs': r1[idx1]['prefs'],
-            'type': r1[idx1]['type'],
+            'prefs': bl1[idx1]['prefs'],
+            'type': bl1[idx1]['type'],
         })
         idx1 += 1
-    while idx2 < len(r2):
+    while idx2 < len(bl2):
         res.append({
             'en': '',
-            'zh': r2[idx2]['line'],
-            'prefs': r2[idx2]['prefs'],
-            'type': r2[idx2]['type'],
+            'zh': bl2[idx2]['line'],
+            'prefs': bl2[idx2]['prefs'],
+            'type': bl2[idx2]['type'],
         })
         idx2 += 1
     return res
@@ -177,7 +177,7 @@ def make_totrans_handler(args):
     if not fname.endswith('.md'):
        raise ValueError('请提供 MD 文件！')
     md = open(fname, encoding='utf8').read()
-    res = proc_md(md)
+    res = parse_blocks(md)
     res = [{
         'en': r['line'], 
         'prefs': r['prefs'],
