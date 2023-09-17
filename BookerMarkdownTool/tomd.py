@@ -9,6 +9,7 @@ from pyquery import PyQuery as pq
 from os import path
 from readability import Document
 from EpubCrawler.img import process_img
+from EpubCrawler.config import config as crawl_cfg
 from datetime import datetime
 from multiprocessing import Pool
 import copy
@@ -84,6 +85,8 @@ def download_handle(args):
         return
     
     # 解析内容并下载图片
+    if args.remove:
+        rt('args.remove').remove()
     if args.body:
         co = rt.find(args.body).html()
     else:
@@ -92,6 +95,8 @@ def download_handle(args):
     if not co: 
         print('未获取到内容！')
         return 
+    if args.img_src:
+        crawl_cfg['imgSrc'] = args.img_src.split(',')
     imgs = {}
     co = process_img(co, imgs, img_prefix='img/', page_url=args.url)
     html = f'''
