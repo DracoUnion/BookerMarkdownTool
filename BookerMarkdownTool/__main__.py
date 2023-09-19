@@ -28,7 +28,6 @@ from .opti import *
 from .ren import *
 from .summary import *
 from .tomd import *
-from .align import *
 from .split import *
 from .comment import *
     
@@ -94,20 +93,6 @@ def main():
     rec_pre_parser = subparsers.add_parser("rec-pre", help="recover pre in md")
     rec_pre_parser.add_argument("fname", help="file name")
     rec_pre_parser.set_defaults(func=recover_pre_handler)
-
-    align_parser = subparsers.add_parser("align", help="align en and zh md file")
-    align_parser.add_argument("en", help="en file name")
-    align_parser.add_argument("zh", help="zh file name")
-    align_parser.set_defaults(func=align_handler)
-    
-    align_dir_parser = subparsers.add_parser("align-dir", help="align en and zh md file in dir")
-    align_dir_parser.add_argument("en", help="en dir name")
-    align_dir_parser.add_argument("zh", help="zh dir name")
-    align_dir_parser.set_defaults(func=align_dir_handler)
-    
-    make_totrans_parser = subparsers.add_parser("make-totrans", help="md to totrans yaml")
-    make_totrans_parser.add_argument("fname", help="en file name")
-    make_totrans_parser.set_defaults(func=make_totrans_handler)
     
     split_parser = subparsers.add_parser("split", help="split md or html")
     split_parser.add_argument("fname", help="file name")
