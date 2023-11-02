@@ -29,6 +29,7 @@ from .ren import *
 from .summary import *
 from .tomd import *
 from .split import *
+from .merge import *
 from .comment import *
     
 def main():
@@ -97,6 +98,12 @@ def main():
     split_parser = subparsers.add_parser("split", help="split md or html")
     split_parser.add_argument("fname", help="file name")
     split_parser.set_defaults(func=split)
+    
+    merge_parser = subparsers.add_parser("merge", help="merge mds")
+    merge_parser.add_argument("dir", help="dir name")
+    merge_parser.add_argument("title", help="title")
+    merge_parser.add_argument("-l", "--lines", type=int, default=1500, help="minimum of lines of each md")
+    merge_parser.set_defaults(func=merge)
     
     comment_parser = subparsers.add_parser("code-comment", help="add comment to code")
     comment_parser.add_argument("fname", help="file or dir name")

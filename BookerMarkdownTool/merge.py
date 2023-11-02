@@ -1,7 +1,7 @@
 import os
 from os import path
 
-def merge_md(args):
+def merge(args):
     dir = path.abspath(args.dir)
     if not path.isdir(dir):
         print('请提供目录')
