@@ -141,7 +141,7 @@ var myConventors = [
   {
     filter: ['th', 'td'],
     replacement: function (c, n) {
-      return cell(c.replace(/\|/g, '&#124;'), n);
+      return cell(c.replace(/\|/g, '&#124;').replace('\n', ' '), n);
     }
   },
   
