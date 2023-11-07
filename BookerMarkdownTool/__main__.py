@@ -31,6 +31,7 @@ from .tomd import *
 from .split import *
 from .merge import *
 from .comment import *
+from .align import *
     
 def main():
     parser = argparse.ArgumentParser(prog="BookerMarkdownTool", description="iBooker WIKI tool", formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -113,6 +114,25 @@ def main():
     comment_parser.add_argument("-p", "--prompt", default=CODE_COMMENT_PROMPT, help="prompt used for code comment")
     comment_parser.add_argument("-m", "--model", default='chatglm2-ggml-6b-q4_0', help="model name or path")
     comment_parser.set_defaults(func=code_comment_handle)
+
+    ext_pre_parser = subparsers.add_parser("align", help="align en and zh md")
+    ext_pre_parser.add_argument("en", help="en md name")
+    ext_pre_parser.add_argument("zh", help="zh md name")
+    ext_pre_parser.set_defaults(func=align_handler)
+
+    align_parser = subparsers.add_parser("align", help="align en and zh md")
+    align_parser.add_argument("en", help="en md name")
+    align_parser.add_argument("zh", help="zh md name")
+    align_parser.set_defaults(func=align_handler)
+
+    align_dir_parser = subparsers.add_parser("align-dir", help="align en and zh md")
+    align_dir_parser.add_argument("en", help="en md dir name")
+    align_dir_parser.add_argument("zh", help="zh md dir name")
+    align_dir_parser.set_defaults(func=align_dir_handler)
+
+    make_to_trans = subparsers.add_parser("mk-totrans", help="en md to yml")
+    make_to_trans.add_argument("fname", help="en md file name")
+    make_to_trans.set_defaults(func=make_totrans_handler)
 
     args = parser.parse_args()
     args.func(args)

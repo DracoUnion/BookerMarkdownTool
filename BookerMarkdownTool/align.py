@@ -181,6 +181,7 @@ def make_totrans_handler(args):
     res = [{
         'en': r['line'], 
         'prefs': r['prefs'],
+        'type': r['type'],
     } for r in res]
     ofname = re.sub(r'\.\w+$', '', fname) + '.yaml'
     open(ofname, 'w', encoding='utf8').write(
