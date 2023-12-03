@@ -10,6 +10,7 @@ def extreact_pre(md):
         pres.append(s)
         idx = len(pres) - 1
         return f'[PRE{idx}]'
+    RE_PRE = r'(`{3,})[\s\S]+?\1'
     md = re.sub(RE_PRE, repl_func, md)
     return md, pres
     
