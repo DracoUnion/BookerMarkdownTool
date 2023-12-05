@@ -63,7 +63,8 @@ var myConventors = [
   {
     filter: function(n) {
         return n.nodeName == 'P' &&
-            n.parentNode.nodeName === 'TD'
+            (n.parentNode.nodeName === 'TD' || 
+             n.parentNode.nodeName === 'TH')
     },
     replacement: function(c){return c}
   },
