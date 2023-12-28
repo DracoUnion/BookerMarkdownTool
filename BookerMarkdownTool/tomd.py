@@ -38,7 +38,7 @@ def tomd_file(args):
         return
     print(args.fname)
     html = open(args.fname, encoding='utf8').read()
-    md = tomd(html)
+    md = tomd(html, args.lang)
     ofname = re.sub(r'\.html$', '', args.fname) + '.md'
     open(ofname, 'w', encoding='utf8').write(md)
 
@@ -49,7 +49,7 @@ def tomd_handle(args):
         tomd_file(args)
 
 
-def tomd(html):
+def tomd(html, lang=None):
     # 处理 IFRAME
     html = re.sub(RE_IFRAME, RE_IFRAME_REPL, html)
     html = re.sub(RE_IFRAME_ALL, '', html)
@@ -63,6 +63,8 @@ def tomd(html):
     md_fname = re.sub(r'\.html$', '', html_fname) + '.md'
     md = open(md_fname, encoding='utf8').read()
     os.remove(html_fname)
+    if lang:
+        md = re.sub(r'```([\s\S]+?```)', '```' + lang + r'\1', md)
     return md
     
 def download_handle(args):

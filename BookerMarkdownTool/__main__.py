@@ -69,6 +69,7 @@ def main():
     tomd_parser = subparsers.add_parser("tomd", help="html to markdown")
     tomd_parser.add_argument("fname", help="file or dir name")
     tomd_parser.add_argument("-t", "--threads", type=int, default=8, help="num of threads")
+    tomd_parser.add_argument("-l", "--lang", help="code language")
     tomd_parser.set_defaults(func=tomd_handle)
 
     fmtzh_parser = subparsers.add_parser("fmt", help="format markdown and html")
