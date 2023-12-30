@@ -16,6 +16,7 @@ from pyquery import PyQuery as pq
 from datetime import datetime
 from collections import OrderedDict
 from multiprocessing import Pool
+from concurrent.futures import ThreadPoolExecutor
 import imgyaso
 
 DIR = path.dirname(path.abspath(__file__))
@@ -144,12 +145,12 @@ def make_dir_handle(file_handle):
     def dir_handle(args):
         dir = args.fname
         fnames = os.listdir(dir)
-        pool = Pool(args.threads)
+        pool = ThreadPoolExecutor(args.threads)
+        hdls = []
         for fname in fnames:
             args = copy.deepcopy(args)
             args.fname = path.join(dir, fname)
-            pool.apply_async(file_handle_safe, [args])
-        pool.close()
-        pool.join()
+            pool.submit(file_handle_safe, args)
+        for h in hdls: h.result()
         
     return dir_handle
