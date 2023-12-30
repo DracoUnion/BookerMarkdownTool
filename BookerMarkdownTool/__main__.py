@@ -93,10 +93,12 @@ def main():
 
     ext_pre_parser = subparsers.add_parser("ext-pre", help="extract pre from md")
     ext_pre_parser.add_argument("fname", help="file name")
+    ext_pre_parser.add_argument("-t", "--threads", type=int, default=8, help="thread count")
     ext_pre_parser.set_defaults(func=extract_pre_handler)
 
     rec_pre_parser = subparsers.add_parser("rec-pre", help="recover pre in md")
     rec_pre_parser.add_argument("fname", help="file name")
+    rec_pre_parser.add_argument("-t", "--threads", type=int, default=8, help="thread count")
     rec_pre_parser.set_defaults(func=recover_pre_handler)
     
     split_parser = subparsers.add_parser("split", help="split md or html")
@@ -116,11 +118,6 @@ def main():
     comment_parser.add_argument("-m", "--model", default='chatglm2-ggml-6b-q4_0', help="model name or path")
     comment_parser.set_defaults(func=code_comment_handle)
 
-    ext_pre_parser = subparsers.add_parser("align", help="align en and zh md")
-    ext_pre_parser.add_argument("en", help="en md name")
-    ext_pre_parser.add_argument("zh", help="zh md name")
-    ext_pre_parser.set_defaults(func=align_handler)
-
     align_parser = subparsers.add_parser("align", help="align en and zh md")
     align_parser.add_argument("en", help="en md name")
     align_parser.add_argument("zh", help="zh md name")
@@ -133,6 +130,7 @@ def main():
 
     make_to_trans = subparsers.add_parser("mk-totrans", help="en md to yml")
     make_to_trans.add_argument("fname", help="en md file name")
+    make_to_trans.add_argument("-t", "--threads", type=int, default=8, help="thread count")
     make_to_trans.set_defaults(func=make_totrans_handler)
 
     args = parser.parse_args()
