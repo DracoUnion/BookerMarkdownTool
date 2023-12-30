@@ -108,18 +108,6 @@ def fmt_apress(html):
     html = str(root)
     html = re.sub(r'</?(div|span|article|header|section|figure|figcaption)[^>]*>', '', html)
     return html
-
-
-def fmt_dir(args):
-    dir = args.fname
-    fnames = os.listdir(dir)
-    pool = Pool(args.threads)
-    for fname in fnames:
-        args = copy.deepcopy(args)
-        args.fname = path.join(dir, fname)
-        pool.apply_async(fmt_file, [args])
-    pool.close()
-    pool.join()
     
 # @safe()
 def fmt_file(args):

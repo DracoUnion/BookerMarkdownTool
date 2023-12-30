@@ -20,6 +20,12 @@ def recover_pre(md, pres):
     return md
     
 def extract_pre_handler(args):
+    if path.isdir(args.fname):
+        make_dir_handle(extract_pre_file)(args)
+    else:
+        extract_pre_file(args)
+    
+def extract_pre_file(args):
     fname = args.fname
     if not fname.endswith('.md'):
         print('请提供MD文件')
@@ -34,6 +40,12 @@ def extract_pre_handler(args):
     open(json_fname, 'w', encoding='utf8').write(json.dumps(pres))
     
 def recover_pre_handler(args):
+    if path.isdir(args.fname):
+        make_dir_handle(recover_pre_file)(args)
+    else:
+        recover_pre_file(args)
+
+def recover_pre_file(args):
     fname = args.fname
     if not fname.endswith('.md'):
         print('请提供MD文件')
