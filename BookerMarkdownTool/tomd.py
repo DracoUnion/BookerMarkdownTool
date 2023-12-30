@@ -19,18 +19,6 @@ RE_IFRAME = r'<iframe[^>]*src="(.+?)"[^>]*>'
 RE_IFRAME_ALL = r'</?iframe[^>]*>'
 RE_IFRAME_REPL = r'<br/><br/><a href="\1">\1</a><br/><br/>'
 
-def tomd_dir(args):
-    dir = args.fname
-    fnames = os.listdir(dir)
-    pool = Pool(args.threads)
-    for fname in fnames:
-        args = copy.deepcopy(args)
-        args.fname = path.join(dir, fname)
-        # tomd_file(args)
-        pool.apply_async(tomd_file, [args])
-    pool.close()
-    pool.join()
-
 # @safe()
 def tomd_file(args):
     if not args.fname.endswith('.html'):
@@ -44,7 +32,7 @@ def tomd_file(args):
 
 def tomd_handle(args):
     if path.isdir(args.fname):
-        tomd_dir(args)
+        make_dir_handle(tomd_file)(args)
     else:
         tomd_file(args)
 
