@@ -14,6 +14,7 @@ from os import path
 from pyquery import PyQuery as pq
 from datetime import datetime
 from collections import OrderedDict
+from multiprocessing import Pool
 import imgyaso
 
 DIR = path.dirname(path.abspath(__file__))
@@ -133,3 +134,21 @@ def find_cmd_path(name):
         if any(path.isfile(path.join(p, name + s)) for s in suff):
             return p
     return ''
+
+def make_dir_handle(file_handle):
+    def file_handle_safe(*args, **kw):
+        try: file_handle(*args, **kw)
+        except: traceback.print_exc()
+        
+    def dir_handle(args):
+        dir = args.fname
+        fnames = os.listdir(dir)
+        pool = Pool(args.threads)
+        for fname in fnames:
+            args = copy.deepcopy(args)
+            args.fname = path.join(dir, fname)
+            pool.apply_async(file_handle_safe, [args])
+        pool.close()
+        pool.join()
+        
+    return dir_handle
