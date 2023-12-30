@@ -3,6 +3,7 @@ from os import path
 import yaml
 import json
 import os
+from .util import *
 
 PREF_IND = r'(\x20{4}|\t)'
 PREF_OL = r'\d+\.\x20{2}'
@@ -171,8 +172,13 @@ def align_dir_handler(args):
         args.zh = fzh
         align_handler(args)
 
-
 def make_totrans_handler(args):
+    if path.isdir(args.fname):
+        make_dir_handle(make_totrans_file)(args)
+    else:
+        make_totrans_file(args)
+
+def make_totrans_file(args):
     fname = args.fname
     if not fname.endswith('.md'):
        raise ValueError('请提供 MD 文件！')

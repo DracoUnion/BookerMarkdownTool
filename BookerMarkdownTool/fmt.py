@@ -128,6 +128,6 @@ def fmt_file(args):
 
 def fmt_handle(args):
     if path.isdir(args.fname):
-        fmt_dir(args)
+        make_dir_handle(fmt_file)(args)
     else:
         fmt_file(args)
