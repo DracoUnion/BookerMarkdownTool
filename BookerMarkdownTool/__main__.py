@@ -32,6 +32,7 @@ from .split import *
 from .merge import *
 from .comment import *
 from .align import *
+from .flatten import *
     
 def main():
     parser = argparse.ArgumentParser(prog="BookerMarkdownTool", description="iBooker WIKI tool", formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -133,6 +134,11 @@ def main():
     make_to_trans.add_argument("-t", "--threads", type=int, default=8, help="thread count")
     make_to_trans.set_defaults(func=make_totrans_handler)
 
+    flatten_parser = subparsers.add_parser("flatten", help="flatten dir")
+    flatten_parser.add_argument("dir", help="dir name")
+    flatten_parser.add_argument("-d", "--delim", default='：', help="delimiter")
+    flatten_parser.set_defaults(func=flatten_dir)
+    
     args = parser.parse_args()
     args.func(args)
 
