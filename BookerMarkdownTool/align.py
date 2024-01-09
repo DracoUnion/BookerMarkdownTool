@@ -228,7 +228,7 @@ def rec_trans_file(args):
     trans = [it for it in trans if it.get('zh')]
     lines = [
         rec_prefs(it['zh'], it['prefs']) +
-        get_line_sep(it, trans[i + 1] if i < len(trans) else None)
+        get_line_sep(it, trans[i + 1] if i + 1 < len(trans) else None)
         for i, it in enumerate(trans)
     ]
     md = ''.join(lines)
