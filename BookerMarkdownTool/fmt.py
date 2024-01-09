@@ -6,9 +6,36 @@ from os import path
 from pyquery import PyQuery as pq
 from .util import *
 
+num_uprscp_map = {
+    '1': '¹',
+    '2': '²',
+    '3': '³',
+    '4': '⁴',
+    '5': '⁵',
+    '6': '⁶',
+    '7': '⁷',
+    '8': '⁸',
+    '9': '⁹',
+    '0': '⁰',
+}
+
+def num2uprscp(text):
+    return ''.join([
+        num_uprscp_map.get(ch, ch)
+        for ch in text
+    ])
+
+def fmt_uprscp(text):
+    return re.sub(
+        r'\^\((\d+)\)', 
+        lambda g: num2uprscp(g.group(1)), 
+        text
+    )
+
 def fmt_zh(text):
     text = re.sub(r'([\u4e00-\u9fff])([a-zA-Z0-9_])', r'\1 \2', text)
     text = re.sub(r'([a-zA-Z0-9_])([\u4e00-\u9fff])', r'\1 \2', text)
+    text = fmt_uprscp(text)
     return text
 
 def fmt_packt(html):
