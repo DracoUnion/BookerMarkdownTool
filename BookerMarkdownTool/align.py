@@ -239,4 +239,4 @@ def rec_trans_handler(args):
     if path.isdir(args.fname):
         make_dir_handle(rec_trans_file)(args)
     else:
-        make_totrans_file(args)
+        rec_trans_file(args)
