@@ -220,7 +220,7 @@ def get_line_sep(cur_blk, nxt_blk):
        return '\n'
     return '\n\n'
 
-def rec_trans(args):
+def rec_trans_file(args):
     fname = args.fname
     if not fname.endswith('.yaml'):
        raise ValueError('请提供 YAML 文件！')
@@ -235,3 +235,8 @@ def rec_trans(args):
     ofname = re.sub(r'\.\w+$', '', fname) + '.md'
     open(ofname, 'w', encoding='utf8').write(md)
 
+def rec_trans_handler(args):
+    if path.isdir(args.fname):
+        make_dir_handle(rec_trans_file)(args)
+    else:
+        make_totrans_file(args)
