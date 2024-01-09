@@ -32,6 +32,19 @@ PREF_MAP = {
     'PREF_BQ': PREF_BQ
 }
 
+PREF_CONT_MAP = {
+    'PREF_IND': '\x20' * 4, 
+    'PREF_OL': '1.  ', 
+    'PREF_UL': '+   ', 
+    'PREF_H1': '# ', 
+    'PREF_H2': '## ', 
+    'PREF_H3': '### ', 
+    'PREF_H4': '#### ', 
+    'PREF_H5': '##### ', 
+    'PREF_H6': '###### ', 
+    'PREF_BQ': '> ',
+}
+
 TYPE_MAP = {
     'TYPE_TB': TYPE_TB,
     'TYPE_PRE': TYPE_PRE,
@@ -73,9 +86,7 @@ def line2block(line):
 
 def parse_blocks(md):
     lines = md.split('\n')
-    lines = [l.strip() for l in lines]
-    lines = list(filter(None, lines))
-    
+    lines = [l for l in lines if l.strip()]
     blocks = [line2block(l) for l in lines]
     return blocks
     
@@ -193,5 +204,34 @@ def make_totrans_file(args):
     open(ofname, 'w', encoding='utf8').write(
         yaml.safe_dump(res, allow_unicode=True))
 
+def rec_prefs(text, prefs):
+    return ''.join([
+        PREF_CONT_MAP.get(p, '')
+        for p in prefs
+    ]) + text
 
+def get_line_sep(cur_blk, nxt_blk):
+    if nxt_blk is None: return '\n'
+    if cur_blk['type'] == TYPE_TB and \
+       nxt_blk['type'] == TYPE_TB:
+       return '\n'
+    if PREF_BQ in cur_blk['prefs'] and \
+       PREF_BQ in nxt_blk['prefs']:
+       return '\n'
+    return '\n\n'
+
+def rec_trans(args):
+    fname = args.fname
+    if not fname.endswith('.yaml'):
+       raise ValueError('请提供 YAML 文件！')
+    trans = yaml.safe_load(open(fname, encoding='utf8').read())
+    trans = [it for it in trans if it.get('zh')]
+    lines = [
+        rec_prefs(it['zh'], it['prefs']) +
+        get_line_sep(it, lines[i + 1] if i < len(lines) else None)
+        for i, it in enumerate(trans)
+    ]
+    md = ''.join(lines)
+    ofname = re.sub(r'\.\w+$', '', fname) + '.md'
+    open(ofname, 'w', encoding='utf8').write(md)
 
