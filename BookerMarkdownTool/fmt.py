@@ -51,7 +51,7 @@ def fmt_link(text):
         \]
         \(([^\)]+)\)
     '''
-    text = re.sub(RE_LINK, r'[`\1`](\2)', text, re.VERBOSE)
+    text = re.sub(RE_LINK, r'[`\1`](\2)', text, flags=re.VERBOSE)
     RE_INNER_LINK = r'''
         (?<!!)
         \[([^\]]+)\]
@@ -60,7 +60,7 @@ def fmt_link(text):
             [^\)]+
         \)
     '''
-    text = re.sub(RE_INNER_LINK, r'\1', text, re.VERBOSE)
+    text = re.sub(RE_INNER_LINK, r'\1', text, flags=re.VERBOSE)
     return text
 
 def fmt_zh(text):
