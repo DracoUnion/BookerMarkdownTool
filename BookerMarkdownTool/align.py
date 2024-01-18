@@ -236,6 +236,9 @@ def fix_inner_code(zh, en):
     zh =  re.sub(r'‘([\x20-\x7e]+)’', repl_func, zh)
     return zh
 
+def check_thead_delim(text):
+    return bool(re.search(r'^\|( (---|:--|:-:|--:) \|)+$', text))
+
 def postproc_trans(trans):
     for i, blk in enumerate(trans):
         if not (blk.get('en') and blk.get('zh')):
@@ -253,6 +256,23 @@ def postproc_trans(trans):
             if not zh.endswith(' |'):
                 zh = zh + ' |'
             blk['zh'] = zh
+            is_thead = i == 0 or trans[i - 1]['type'] != 'TYPE_TB'
+            no_thead_delim = i == len(trans - 1) or not check_thead_delim(trans[i+1]['zh'])
+            if is_thead and no_thead_delim: 
+                blk['no_thead_delim'] = True
+        
+    for i in range(len(trans) -1, -1, -1):
+        blk = trans[i]
+        if blk.get('no_thead_delim'):
+            ncells = len(re.findall(r'(?<!\\)\|'), blk['zh'])
+            th_delim = '|' + ' --- |' * (ncells - 1)
+            trans.insert(i + 1, {
+                'en': th_delim,
+                'zh': th_delim,
+                'prefs': blk['prefs'],
+                'type': 'TYPE_TB',
+            })
+            del blk['no_thead_delim']
     return trans
 
 def rec_trans_file(args):
