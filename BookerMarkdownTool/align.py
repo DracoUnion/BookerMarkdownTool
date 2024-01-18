@@ -264,7 +264,7 @@ def postproc_trans(trans):
     for i in range(len(trans) -1, -1, -1):
         blk = trans[i]
         if blk.get('no_thead_delim'):
-            ncells = len(re.findall(r'(?<!\\)\|'), blk['zh'])
+            ncells = len(re.findall(r'(?<!\\)\|', blk['zh']))
             th_delim = '|' + ' --- |' * (ncells - 1)
             trans.insert(i + 1, {
                 'en': th_delim,
