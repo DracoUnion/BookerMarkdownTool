@@ -26,16 +26,28 @@ def num2uprscp(text):
     ])
 
 def fmt_uprscp(text):
-    return re.sub(
+    text =  re.sub(
         r'\^\((\d+)\)', 
         lambda g: num2uprscp(g.group(1)), 
         text
     )
+    text = re.sub(
+        r'\^(\d+)',
+        lambda g: num2uprscp(g.group(1)), 
+        text
+    )
+    return text
 
-def fmt_zh(text):
+def fmt_en_zh_gap(text):
     text = re.sub(r'([\u4e00-\u9fff])([a-zA-Z0-9_])', r'\1 \2', text)
     text = re.sub(r'([a-zA-Z0-9_])([\u4e00-\u9fff])', r'\1 \2', text)
+    return text
+
+def fmt_zh(text):
+    text = fmt_en_zh_gap(text)
     text = fmt_uprscp(text)
+    # 链接
+    text = re.sub(r'\[https?://(.+?)\]\((.+?)\)', r'[`\1`](\2)', text)
     return text
 
 def fmt_packt(html):
