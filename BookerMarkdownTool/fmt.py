@@ -74,6 +74,7 @@ def fmt_img(text):
 
     def repl_img_func(g):
         desc, src = g.group(1), g.group(2)
+        desc = desc.replace('\r', '').replace('\n', '')
         src = "img/" + path.basename(src)
         return f'![{desc}]({src})'
 

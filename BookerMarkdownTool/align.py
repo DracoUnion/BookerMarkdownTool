@@ -222,8 +222,13 @@ def get_line_sep(cur_blk, nxt_blk):
 
 def postproc_trans(trans):
     for blk in trans:
+        if blk['type'] == 'TYPE_NORMAL' and blk.get('zh') == '>':
+            blk['zh'] = ''
+            blk['type'] = 'TYPE_BQ'
         if blk['type'] == 'TYPE_TB':
             zh = blk.get('zh', '')
+            zh = re.sub(r'(?<!\\)\|(?=\S)', '| ', zh)
+            zh = re.sub(r'(?<=\S)(?<!\\)\|', ' |', zh)
             if not zh.startswith('| '):
                 zh = '| ' + zh
             if not zh.endswith(' |'):
