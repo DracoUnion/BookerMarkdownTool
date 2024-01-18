@@ -257,7 +257,7 @@ def postproc_trans(trans):
                 zh = zh + ' |'
             blk['zh'] = zh
             is_thead = i == 0 or trans[i - 1]['type'] != 'TYPE_TB'
-            no_thead_delim = i == len(trans - 1) or not check_thead_delim(trans[i+1]['zh'])
+            no_thead_delim = i == len(trans) - 1 or not check_thead_delim(trans[i+1]['zh'])
             if is_thead and no_thead_delim: 
                 blk['no_thead_delim'] = True
         
