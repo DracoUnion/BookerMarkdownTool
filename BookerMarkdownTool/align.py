@@ -212,19 +212,31 @@ def rec_prefs(text, prefs):
 
 def get_line_sep(cur_blk, nxt_blk):
     if nxt_blk is None: return '\n'
-    if cur_blk['type'] == TYPE_TB and \
-       nxt_blk['type'] == TYPE_TB:
+    if cur_blk['type'] == 'TYPE_TB' and \
+       nxt_blk['type'] == 'TYPE_TB':
        return '\n'
-    if PREF_BQ in cur_blk['prefs'] and \
-       PREF_BQ in nxt_blk['prefs']:
-       return '\n'
+    if 'PREF_BQ' in cur_blk['prefs'] and \
+       'PREF_BQ' in nxt_blk['prefs']:
+       return '\n' + rec_prefs('', cur_blk['prefs']) + '\n'
     return '\n\n'
+
+def postproc_trans(trans):
+    for blk in trans:
+        if blk['type'] == 'TYPE_TB':
+            zh = blk.get('zh', '')
+            if not zh.startswith('| '):
+                zh = '| ' + zh
+            if not zh.endswith(' |'):
+                zh = zh + ' |'
+            blk['zh'] = zh
+    return trans
 
 def rec_trans_file(args):
     fname = args.fname
     if not fname.endswith('.yaml'):
        raise ValueError('请提供 YAML 文件！')
     trans = yaml.safe_load(open(fname, encoding='utf8').read())
+    trans = postproc_trans(trans)
     trans = [it for it in trans if it.get('zh')]
     lines = [
         rec_prefs(it['zh'], it['prefs']) +
