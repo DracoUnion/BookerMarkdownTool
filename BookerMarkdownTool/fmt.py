@@ -63,10 +63,28 @@ def fmt_link(text):
     text = re.sub(RE_INNER_LINK, r'\1', text, flags=re.VERBOSE)
     return text
 
+def fmt_img(text):
+    RE_INNER_IMG = r'''
+        !\[([^\]]*)\]
+        \(
+            (?!https?://)
+            ([^\)]+)
+        \)
+    '''
+
+    def repl_img_func(g):
+        desc, src = g.group(1), g.group(2)
+        src = "img/" + path.basename(src)
+        return f'![{desc}]({src})'
+
+    return re.sub(RE_INNER_IMG, repl_img_func, text, flags=re.VERBOSE)
+
+
 def fmt_zh(text):
     text = fmt_en_zh_gap(text)
     text = fmt_uprscp(text)
     text = fmt_link(text)
+    text = fmt_img(text)
     return text
 
 def fmt_packt(html):
