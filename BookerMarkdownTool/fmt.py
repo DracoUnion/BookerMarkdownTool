@@ -43,11 +43,30 @@ def fmt_en_zh_gap(text):
     text = re.sub(r'([a-zA-Z0-9_])([\u4e00-\u9fff])', r'\1 \2', text)
     return text
 
+def fmt_link(text):
+    RE_LINK = r'''
+        \[
+            https?://
+            ([^\]]+)
+        \]
+        \(([^\)]+)\)
+    '''
+    text = re.sub(RE_LINK, r'[`\1`](\2)', text, re.VERBOSE)
+    RE_INNER_LINK = r'''
+        (?<!!)
+        \[([^\]]+)\]
+        \(
+            (?!https?://)
+            [^\)]+
+        \)
+    '''
+    text = re.sub(RE_INNER_LINK, r'\1', text, re.VERBOSE)
+    return text
+
 def fmt_zh(text):
     text = fmt_en_zh_gap(text)
     text = fmt_uprscp(text)
-    # 链接
-    text = re.sub(r'\[https?://(.+?)\]\((.+?)\)', r'[`\1`](\2)', text)
+    text = fmt_link(text)
     return text
 
 def fmt_packt(html):
