@@ -220,8 +220,27 @@ def get_line_sep(cur_blk, nxt_blk):
        return '\n' + rec_prefs('', cur_blk['prefs']) + '\n'
     return '\n\n'
 
+
+def fix_inner_code(zh, en):
+    def repl_func(g):
+        code = g.group(1)
+        if  f'`{code}`' in en:
+            return f'`{code}`'
+        elif f'`"{code}"`' in en:
+            return f'`"{code}"`'
+        elif f"`'{code}'`" in en:
+            return f"`'{code}'`"
+        else:
+            return g.group(0)
+    zh =  re.sub(r'“([\x20-\x7e]+)”', repl_func, zh)
+    zh =  re.sub(r'‘([\x20-\x7e]+)’', repl_func, zh)
+    return zh
+
 def postproc_trans(trans):
-    for blk in trans:
+    for i, blk in enumerate(trans):
+        if not (blk.get('en') and blk.get('zh')):
+            continue
+        blk['zh'] = fix_inner_code(blk['zh'], blk['en'])
         if blk['type'] == 'TYPE_NORMAL' and blk.get('zh') == '>':
             blk['zh'] = ''
             blk['type'] = 'TYPE_BQ'
