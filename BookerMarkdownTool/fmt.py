@@ -79,12 +79,19 @@ def fmt_img(text):
 
     return re.sub(RE_INNER_IMG, repl_img_func, text, flags=re.VERBOSE)
 
+def fmt_chnum(text):
+    return re.sub(
+        r'第\x20*(\d{1,4})\x20*章',
+        lambda g: '第' + num4d_to_zh(int(g.group(1))) + '章',
+        text, 
+    )
 
 def fmt_zh(text):
     text = fmt_en_zh_gap(text)
     text = fmt_uprscp(text)
     text = fmt_link(text)
     text = fmt_img(text)
+    text = fmt_chnum(text)
     return text
 
 def fmt_packt(html):

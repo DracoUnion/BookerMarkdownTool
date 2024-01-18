@@ -154,3 +154,48 @@ def make_dir_handle(file_handle):
         for h in hdls: h.result()
         
     return dir_handle
+
+def num2d_to_zh(num):
+    digit_zh_table = '零一二三四五六七八九'
+    ones = num % 10
+    tens = num // 10 % 10
+    if tens == 0:
+        return digit_zh_table[ones]
+    return (
+        (digit_zh_table[tens] if tens != 1 else '')
+        + '十' + 
+        (digit_zh_table[ones] if ones != 0 else '')
+    )
+
+def num3d_to_zh(num):
+    digit_zh_table = '零一二三四五六七八九'
+    ones = num % 10
+    tens = num // 10 % 10
+    hectos = num // 100 % 10
+    if hectos == 0:
+        return num2d_to_zh(num)
+    if ones == 0 and tens == 0:
+        return digit_zh_table[hectos] + '百'
+    return (
+        digit_zh_table[hectos] + '百' +
+        (digit_zh_table[tens] + '十' if tens != 0 else '零') + 
+        (digit_zh_table[ones] if ones != 0 else '')
+    )
+def num4d_to_zh(num):
+    digit_zh_table = '零一二三四五六七八九'
+    ones = num % 10
+    tens = num // 10 % 10
+    hectos = num // 100 % 10
+    kilos = num // 1000 % 10
+    if kilos == 0:
+        return num3d_to_zh(num)
+    if ones == 0 and tens == 0 and hectos == 0:
+        return digit_zh_table[kilos] + '千'
+    if ones == 0 and tens == 0:
+        return digit_zh_table[kilos] + '千' + digit_zh_table[hectos] + '百'
+    return (
+        digit_zh_table[kilos] + '千' +
+        (digit_zh_table[hectos] + '百' if hectos != 0 else '零') + 
+        (digit_zh_table[tens] + '十' if tens != 0 else '零') + 
+        (digit_zh_table[ones] if ones != 0 else '')
+    ).replace('零零', '零')
