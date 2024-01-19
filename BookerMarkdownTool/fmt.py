@@ -123,7 +123,8 @@ def fix_title(fnames):
             chnum += 1
             open(f, 'w', encoding='utf8').write(text)
             continue
-        if  title == '前言' or title == '序言' or \
+        if  title.startswith('前言') or \
+            title.startswith('序言') or \
             re.search('^第[' + zhch + ']+部分', title) or \
             title.startswith('附录'):
             continue
