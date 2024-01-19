@@ -102,8 +102,10 @@ def fix_code_ind(text):
     for i in idcs:
         i = int(i)
         code = pres[i]
-        if re.search(r'^\x20{4}```', code, flags=re.M):
-            code = re.sub(r'^\x20{4}', '', code, flags=re.M)
+        m = re.search(r'^(\x20+)```', code, flags=re.M)
+        if m:
+            nspaces = len(m.group(1))
+            code = re.sub(r'^\x20{' + str(nspaces) + '}', '', code, flags=re.M)
             pres[i] = code
     return recover_pre(text, pres)
 
