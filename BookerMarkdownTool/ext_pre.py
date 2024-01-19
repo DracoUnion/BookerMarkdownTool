@@ -3,22 +3,6 @@ from os import path
 import json
 import os
 from .util import *
-
-def extreact_pre(md):
-    pres = []
-    def repl_func(m):
-        s = m.group()
-        pres.append(s)
-        idx = len(pres) - 1
-        return f'[PRE{idx}]'
-    RE_PRE = r'(`{3,})[\s\S]+?\1'
-    md = re.sub(RE_PRE, repl_func, md)
-    return md, pres
-    
-def recover_pre(md, pres):
-    for i, pre in enumerate(pres):
-        md = md.replace(f'[PRE{i}]', pre)
-    return md
     
 def extract_pre_handler(args):
     if path.isdir(args.fname):

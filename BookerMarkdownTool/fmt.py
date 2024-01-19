@@ -93,7 +93,19 @@ def fmt_zh(text):
     text = fmt_link(text)
     text = fmt_img(text)
     text = fmt_chnum(text)
+    text = fmt_en_zh_gap(text)
     return text
+
+def fix_code_ind(text):
+    text, pres = extreact_pre(text)
+    idcs = re.findall(r'^\[PRE(\d+)\]', text, flags=re.M)
+    for i in idcs:
+        i = int(i)
+        code = pres[i]
+        if re.search(r'^\x20{4}```', code, flags=re.M):
+            re.sub(r'^\x20{4}', '', code, flags=re.M)
+        pres[i] = code
+    return recover_pre(text, pres)
 
 def fmt_packt(html):
     RE_UNUSED_TAG = r'</?(article|section|span|header|link)[^>]*>'
@@ -208,6 +220,8 @@ def fmt_file(args):
         text = fmt_packt(text)
     elif mode == 'apress':
         text = fmt_apress(text)
+    elif mode == 'code-ind':
+        text = fix_code_ind(text)
     open(args.fname, 'w', encoding='utf8').write(text)
 
 def fmt_handle(args):

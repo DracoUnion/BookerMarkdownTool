@@ -199,3 +199,20 @@ def num4d_to_zh(num):
         (digit_zh_table[tens] + '十' if tens != 0 else '零') + 
         (digit_zh_table[ones] if ones != 0 else '')
     ).replace('零零', '零')
+
+
+def extreact_pre(md):
+    pres = []
+    def repl_func(m):
+        s = m.group()
+        pres.append(s)
+        idx = len(pres) - 1
+        return f'[PRE{idx}]'
+    RE_PRE = r'(`{3,})[\s\S]+?\1'
+    md = re.sub(RE_PRE, repl_func, md)
+    return md, pres
+    
+def recover_pre(md, pres):
+    for i, pre in enumerate(pres):
+        md = md.replace(f'[PRE{i}]', pre)
+    return md
