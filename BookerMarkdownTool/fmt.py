@@ -103,8 +103,8 @@ def fix_code_ind(text):
         i = int(i)
         code = pres[i]
         if re.search(r'^\x20{4}```', code, flags=re.M):
-            re.sub(r'^\x20{4}', '', code, flags=re.M)
-        pres[i] = code
+            code = re.sub(r'^\x20{4}', '', code, flags=re.M)
+            pres[i] = code
     return recover_pre(text, pres)
 
 def fmt_packt(html):
