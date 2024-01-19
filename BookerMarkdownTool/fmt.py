@@ -112,7 +112,8 @@ def fix_code_ind(text):
 def fix_title(fnames):
     chnum = 1
     zhch = '零一二三四五六七八九十百千'
-    for f in enumerate(fnames):
+    for f in fnames:
+        print(f)
         text = open(f, encoding='utf8').read()
         m = re.search(r'\A\s*^#\x20+(.+?)$', text, flags=re.M)
         if not m:
@@ -133,6 +134,25 @@ def fix_title(fnames):
         text = text[:ins_idx] + '第' + num4d_to_zh(chnum) + '章：' + text[:ins_idx]
         open(f, 'w', encoding='utf8').write(text)
 
+def fix_title_handler(args):
+    dir = args.dir
+    fnames = [f for f in os.listdir(dir) if f.endswith('.md')]
+    if not args.re:
+        fnames.sort()
+        fix_title([path.join(dir, f) for f in fnames])
+        return
+    groups = {}
+    for f in fnames:
+        m = re.search(args.re, f)
+        if not m: continue
+        pref = m.group()
+        groups.setdefault(pref, [])
+        groups[pref].append(f)
+    for fnames in groups.values():
+        fnames.sort()
+        fix_title([path.join(dir, f) for f in fnames])
+    
+    
 
 def fmt_packt(html):
     RE_UNUSED_TAG = r'</?(article|section|span|header|link)[^>]*>'

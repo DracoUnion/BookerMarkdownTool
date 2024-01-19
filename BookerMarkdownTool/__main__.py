@@ -144,6 +144,12 @@ def main():
     make_to_trans.add_argument("-t", "--threads", type=int, default=8, help="thread count")
     make_to_trans.set_defaults(func=rec_trans_handler)
 
+    fix_title_trans = subparsers.add_parser("fix-title", help="zh yaml to md")
+    make_to_trans.add_argument("fname", help="zh yaml file name")
+    make_to_trans.add_argument("-t", "--threads", type=int, default=8, help="thread count")
+    make_to_trans.set_defaults(func=rec_trans_handler)
+
+
     
     args = parser.parse_args()
     args.func(args)
