@@ -121,14 +121,13 @@ def fix_title(fnames):
             chnum += 1
             continue
         title = m.group(1).strip()
-        if title == '前言' or title == '序言':
+        if  title == '前言' or title == '序言' or \
+            re.search('^第[' + zhch + ']+部分', title) or \
+            title.startswith('附录'):
             continue
-        if re.search('^第[' + zhch + ']+部分', title):
-            continue
-        if re.search('^第[' + zhch + ']+章', title):
+        if  re.search('^第[' + zhch + ']+章', title) or \
+            re.search('^[' + zhch + ']+、', title):
             chnum += 1
-            continue
-        if title.startswith('附录'):
             continue
         ins_idx = m.start(1)
         text = text[:ins_idx] + '第' + num4d_to_zh(chnum) + '章：' + text[:ins_idx]
