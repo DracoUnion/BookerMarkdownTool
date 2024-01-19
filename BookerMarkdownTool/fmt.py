@@ -109,6 +109,31 @@ def fix_code_ind(text):
             pres[i] = code
     return recover_pre(text, pres)
 
+def fix_title(fnames):
+    chnum = 1
+    zhch = '零一二三四五六七八九十百千'
+    for f in enumerate(fnames):
+        text = open(f, encoding='utf8').read()
+        m = re.search(r'\A\s*^#\x20+(.+?)$', text, flags=re.M)
+        if not m:
+            text = '# 第' + num4d_to_zh(chnum) + '章\n\n' + text
+            chnum += 1
+            continue
+        title = m.group(1).strip()
+        if title == '前言' or title == '序言':
+            continue
+        if re.search('^第[' + zhch + ']+部分', title):
+            continue
+        if re.search('^第[' + zhch + ']+章', title):
+            chnum += 1
+            continue
+        if title.startswith('附录'):
+            continue
+        ins_idx = m.start(1)
+        text = text[:ins_idx] + '第' + num4d_to_zh(chnum) + '章：' + text[:ins_idx]
+        open(f, 'w', encoding='utf8').write(text)
+
+
 def fmt_packt(html):
     RE_UNUSED_TAG = r'</?(article|section|span|header|link)[^>]*>'
     RE_DIV_START = r'<div[^>]*>\s*'
