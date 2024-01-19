@@ -115,7 +115,7 @@ def fix_title(fnames):
     for f in fnames:
         print(f)
         name = path.basename(f)[:-3]
-        if name.upper() == name: continue
+        if name == 'README' or name == 'SUMMARY': continue
         text = open(f, encoding='utf8').read()
         title, (st, _) = get_md_title(text)
         if not title:
