@@ -30,6 +30,8 @@ headers = {
     'Referer': 'https://www.bilibili.com/',
 }
 
+RE_TITLE = r'\A\s*^#+\x20+(.+?)$'
+
 def d(name):
     return path.join(DIR, name)
 
@@ -216,3 +218,9 @@ def recover_pre(md, pres):
     for i, pre in enumerate(pres):
         md = md.replace(f'[PRE{i}]', pre)
     return md
+
+def get_md_title(text):
+    m = re.search(RE_TITLE, text, flags=re.M)
+    if not m:
+        return None, (None, None)
+    return m.group(1).strip(), m.span(1)

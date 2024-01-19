@@ -115,12 +115,11 @@ def fix_title(fnames):
     for f in fnames:
         print(f)
         text = open(f, encoding='utf8').read()
-        m = re.search(r'\A\s*^#\x20+(.+?)$', text, flags=re.M)
-        if not m:
+        title, (st, _) = get_md_title(text)
+        if not title:
             text = '# 第' + num4d_to_zh(chnum) + '章\n\n' + text
             chnum += 1
             continue
-        title = m.group(1).strip()
         if  title == '前言' or title == '序言' or \
             re.search('^第[' + zhch + ']+部分', title) or \
             title.startswith('附录'):
@@ -129,8 +128,7 @@ def fix_title(fnames):
             re.search('^[' + zhch + ']+、', title):
             chnum += 1
             continue
-        ins_idx = m.start(1)
-        text = text[:ins_idx] + '第' + num4d_to_zh(chnum) + '章：' + text[:ins_idx]
+        text = text[:st] + '第' + num4d_to_zh(chnum) + '章：' + text[st:]
         open(f, 'w', encoding='utf8').write(text)
 
 def fix_title_handler(args):

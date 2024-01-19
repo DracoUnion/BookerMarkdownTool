@@ -5,8 +5,8 @@ from collections import OrderedDict
 import yaml
 import traceback
 from urllib.parse import quote_plus
+from .util import *
 
-RE_TITLE = r'^#+ (.+?)$'
 RE_YAML_META = r'<!--yml([\s\S]+?)-->'
 
 
@@ -23,9 +23,8 @@ def summary_handle(args):
         fullf = path.join(dir, f)
         print(fullf)
         cont = open(fullf, encoding='utf8').read()
-        m = re.search(RE_TITLE, cont, flags=re.M)
-        if not m: continue
-        title = m.group(1)
+        title, _ = get_md_title(cont)
+        if not title: continue
         toc.append(f'+   [{title}]({f})')
     summary = '\n'.join(toc)
     open(path.join(dir, 'SUMMARY.md'), 'w', encoding='utf8').write(summary)
@@ -50,11 +49,10 @@ def wiki_summary_handle(args):
         dt = meta.get('date', '0001-01-01 00:00:00')
         cate = meta.get('category', '未分类')
         # 提取标题
-        m = re.search(RE_TITLE, md, flags=re.M)
-        if not m: 
+        title, _ = get_md_title(md)
+        if not title: 
             print('未找到标题，已跳过')
             continue
-        title = m.group(1)
         toc.setdefault(cate, [])
         toc[cate].append({
             'title': title,
