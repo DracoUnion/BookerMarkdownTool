@@ -87,12 +87,22 @@ def fmt_chnum(text):
         text, 
     )
 
+def fmt_title_num(text):
+    title, pos = get_md_title(text)
+    if not title: return text
+    m = re.search(r'\A(\d+)\x20(.+)\Z', title)
+    if not m: return text
+    num = m.group(1)
+    title = num4d_to_zh(num) + '、' + m.group(2).strip()
+    return text[:pos[0]] + title + text[pos[1]:]
+
 def fmt_zh(text):
     text = fmt_en_zh_gap(text)
     text = fmt_uprscp(text)
     text = fmt_link(text)
     text = fmt_img(text)
     text = fmt_chnum(text)
+    text = fmt_title_num(text)
     text = fmt_en_zh_gap(text)
     return text
 
