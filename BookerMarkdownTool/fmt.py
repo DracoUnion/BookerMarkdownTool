@@ -92,7 +92,7 @@ def fmt_title_num(text):
     if not title: return text
     m = re.search(r'\A(\d+)\x20(.+)\Z', title)
     if not m: return text
-    num = m.group(1)
+    num = int(m.group(1))
     title = num4d_to_zh(num) + '、' + m.group(2).strip()
     return text[:pos[0]] + title + text[pos[1]:]
 
