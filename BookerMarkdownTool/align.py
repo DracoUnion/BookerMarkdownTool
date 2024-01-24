@@ -280,6 +280,7 @@ def rec_trans_file(args):
     if not fname.endswith('.yaml'):
        raise ValueError('请提供 YAML 文件！')
     trans = yaml.safe_load(open(fname, encoding='utf8').read())
+    trans = [it for it in trans if it.get('zh')]
     trans = postproc_trans(trans)
     trans = [it for it in trans if it.get('zh')]
     lines = [
