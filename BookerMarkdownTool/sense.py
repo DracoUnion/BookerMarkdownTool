@@ -11,7 +11,7 @@ def filter_sense_file(args):
         return
         
     wdli_fname = path.join(DIR, 'asset', 'TencentSensitiveWords.zip')
-    zip = zipfile.ZipFile(BytesIO(open(wdli_fname, 'rb').read())
+    zip = zipfile.ZipFile(BytesIO(open(wdli_fname, 'rb').read()))
     wdli = zip.read('TencentSensitiveWords.txt').decode('utf8', 'ignore').split('\n'))
     wdli = [w for w in wdli if w.strip()]
     
