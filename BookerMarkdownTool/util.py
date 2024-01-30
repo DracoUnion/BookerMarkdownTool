@@ -224,3 +224,7 @@ def get_md_title(text):
     if not m:
         return None, (None, None)
     return m.group(1).strip(), m.span(1)
+    
+def extname(fname):
+    m = re.search(r'\.(\w+)$', fname)
+    return m.group(1) if m else ''
