@@ -19,7 +19,7 @@ def filter_sense_file(args):
     for w in wdli:
         if w in cont:
             print(f'检测到：{w}')
-            nw = '丨'.join(w.split(''))
+            nw = '丨'.join(w.split())
             cont = cont.replace(w, nw)
             
     open(args.fname, 'w', encoding='utf8').write(cont)
