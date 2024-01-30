@@ -5,7 +5,7 @@ from io import BytesIO
 
 def filter_sense_file(args):
     print(args.fname)
-    ext = extname(arg.fname).lower()
+    ext = extname(args.fname).lower()
     if ext not in ['md', 'txt']:
         print('请提供 MD 或 TXT 文件')
         return
