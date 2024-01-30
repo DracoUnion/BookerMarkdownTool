@@ -33,6 +33,7 @@ from .merge import *
 from .comment import *
 from .align import *
 from .flatten import *
+from .sense import *
     
 def main():
     parser = argparse.ArgumentParser(prog="BookerMarkdownTool", description="iBooker WIKI tool", formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -149,6 +150,10 @@ def main():
     fix_title_trans.add_argument("--re", help="re of pref")
     fix_title_trans.set_defaults(func=fix_title_handler)
     
+    sense_parser = subparsers.add_parser("filter-sense", help="filter sensitive words")
+    sense_parser.add_argument("fname", help="md or txt file name")
+    sense_parser.set_defaults(func=filter_sense_file)
+   
     args = parser.parse_args()
     args.func(args)
 
