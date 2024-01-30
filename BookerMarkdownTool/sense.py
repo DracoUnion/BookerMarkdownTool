@@ -2,6 +2,7 @@ from .util import *
 from os import path
 import zipfile
 from io import BytesIO
+import re
 
 def filter_sense_file(args):
     print(args.fname)
@@ -17,9 +18,11 @@ def filter_sense_file(args):
     
     cont = open(args.fname, encoding='utf8').read()
     for w in wdli:
+        if len(w) == 1: continue
+        if re.search(r'^[\x20-\x7f]+$', w): continue
         if w in cont:
             print(f'检测到：{w}')
-            nw = '丨'.join(w.split())
+            nw = '丨'.join([ch for ch in w])
             cont = cont.replace(w, nw)
             
     open(args.fname, 'w', encoding='utf8').write(cont)
