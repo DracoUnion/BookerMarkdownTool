@@ -48,7 +48,7 @@ def merge(args):
     for i, md in enumerate(mds):
         fname = dir + '-merge-' + str(i).zfill(l) + '.md'
         print(fname)
-        title = f'# {args.title}（{num4d_to_zh(i)}）'
+        title = f'# {args.title}（{num4d_to_zh(i + 1)}）'
         md = f'{title}\n\n{credit}\n\n{md}'
         open(fname, 'w', encoding='utf8').write(md)
     
