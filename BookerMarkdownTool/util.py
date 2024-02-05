@@ -228,3 +228,8 @@ def get_md_title(text):
 def extname(fname):
     m = re.search(r'\.(\w+)$', fname)
     return m.group(1) if m else ''
+
+def get_md_credit(text):
+    RE_CREDIT = r'^>\x20(?:原文|来源|链接|译者|协议)：.*$'
+    credits = re.findall(RE_CREDIT, text, flags=re.M)
+    return '\n> \n'.join(credits)
