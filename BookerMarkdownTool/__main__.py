@@ -111,6 +111,7 @@ def main():
     merge_parser.add_argument("dir", help="dir name")
     merge_parser.add_argument("-t", "--title", default='', help="title")
     merge_parser.add_argument("-l", "--lines", type=int, default=1500, help="minimum of lines of each md")
+    merge_parser.add_argument("-i", "--img-pref", help="img link prefix")
     merge_parser.set_defaults(func=merge)
     
     comment_parser = subparsers.add_parser("code-comment", help="add comment to code")
