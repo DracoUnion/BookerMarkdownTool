@@ -29,6 +29,8 @@ def merge(args):
 
     # 批量替换图像前缀
     if args.img_pref:
+        if not args.img_pref.endswith('/'):
+            args.img_pref += '/'
         mds = [
             re.sub(r'(?<=\]\()img/', args.img_pref, md)
             for md in mds
