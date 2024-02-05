@@ -174,11 +174,9 @@ def fmt_sphinx(html):
         code = el.text().strip().replace('\n', ' ')
         el_pre = pq('<pre></pre>')
         el_pre.text(code)
-        el.clear()
-        el.append(el_pre)
         el2 = pq('<dt></dt>')
         el2.append(el_pre)
-        print(el2)
+        el.replace_with(el2)
     return str(rt)
 
 
