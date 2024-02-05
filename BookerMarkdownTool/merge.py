@@ -27,18 +27,24 @@ def merge(args):
             
     mds = [md for md in mds if md]
 
+    # 批量替换图像前缀
+    if args.img_pref:
+        mds = [
+            re.sub(r'(?<=\]\()img/', args.img, md)
+            for md in mds
+        ]
+
     # 未设置标题情况下从 README 里面读取标题并设置
     credit = ''
     if  not args.title and \
         path.isfile(path.join(args.dir, 'README.md')):
         readme = open(path.join(args.dir, 'README.md'), encoding='utf8').read()
         args.title, _ = get_md_title(readme)
-        credit = get_md_credit(credit)
+        credit = get_md_credit(readme)
 
-    
     l = len(str(len(mds)))
     for i, md in enumerate(mds):
-        fname = dir + '-' + str(i).zfill(l) + '.md'
+        fname = dir + '-merge-' + str(i).zfill(l) + '.md'
         print(fname)
         title = f'# {args.title}（{num4d_to_zh(i)}）'
         md = f'{title}\n\n{credit}\n\n{md}'
