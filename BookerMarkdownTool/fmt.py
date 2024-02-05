@@ -164,7 +164,19 @@ def fix_title_handler(args):
         fnames.sort()
         fix_title([path.join(dir, f) for f in fnames])
     
-    
+def fmt_sphinx(html):
+    rt = pq(html)
+    el_dts = rt('dt.py')
+    for el in el_dts:
+        el = pq(el)
+        el.children('a.reference, a.anchorjs-link').remove()
+        code = el.text().strip().replace('\n', ' ')
+        el_pre = pq('<pre></pre>')
+        el_pre.text(code)
+        el.clear()
+        el.append(el_pre)
+    return str(rt)
+
 
 def fmt_packt(html):
     RE_UNUSED_TAG = r'</?(article|section|span|header|link)[^>]*>'
@@ -267,20 +279,22 @@ def fmt_apress(html):
 # @safe()
 def fmt_file(args):
     mode = args.mode
-    if not args.fname.endswith('.html') and \
-        not args.fname.endswith('.md'):
+    ext = extname(args.fname.lower())
+    if ext not in ['html', 'md']:
         print('请提供 HTML 或 MD 文件')
         return
     print(args.fname)
     text = open(args.fname, encoding='utf8').read()
     if mode == 'zh':
         text = fmt_zh(text)
-    elif mode == 'packt':
+    elif mode == 'packt' and ext == 'html':
         text = fmt_packt(text)
-    elif mode == 'apress':
+    elif mode == 'apress' and ext == 'html':
         text = fmt_apress(text)
-    elif mode == 'code-ind':
+    elif mode == 'code-ind' and ext == 'md':
         text = fix_code_ind(text)
+    elif mode == 'sphinx' and ext == 'html':
+        text = fmt_sphinx(text)
     open(args.fname, 'w', encoding='utf8').write(text)
 
 def fmt_handle(args):
