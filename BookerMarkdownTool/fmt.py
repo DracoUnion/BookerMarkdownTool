@@ -167,6 +167,7 @@ def fix_title_handler(args):
 def fmt_sphinx(html):
     rt = pq(html)
     el_dts = rt('dt.py')
+    print(len(el_dts))
     for el in el_dts:
         el = pq(el)
         el.children('a.reference, a.anchorjs-link').remove()
@@ -175,6 +176,9 @@ def fmt_sphinx(html):
         el_pre.text(code)
         el.clear()
         el.append(el_pre)
+        el2 = pq('<dt></dt>')
+        el2.append(el_pre)
+        print(el2)
     return str(rt)
 
 
