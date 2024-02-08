@@ -179,6 +179,7 @@ def fmt_sphinx(html):
     return str(rt)
 
 def fmt_oreilly(html):
+    html = html.replace('&#13;', '')
     html = re.sub(r'<code[^>]*>(\s*)</code>', r'\1', html)
     return html
 
