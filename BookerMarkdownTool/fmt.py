@@ -291,7 +291,7 @@ def fmt_file(args):
     text = open(args.fname, encoding='utf8').read()
     if mode == 'zh':
         text = fmt_zh(text)
-    elif mode == 'oreilly' and ext == "html":
+    elif mode in ['oreilly', 'orly'] and ext == "html":
         text = fmt_oreilly(text)
     elif mode == 'packt' and ext == 'html':
         text = fmt_packt(text)
