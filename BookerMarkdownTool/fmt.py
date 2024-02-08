@@ -178,6 +178,9 @@ def fmt_sphinx(html):
         el.replace_with(el2)
     return str(rt)
 
+def fmt_oreilly(html):
+    html = re.sub(r'<code[^>]*>(\s*)</code>', r'\1', html)
+    return html
 
 def fmt_packt(html):
     RE_UNUSED_TAG = r'</?(article|section|span|header|link)[^>]*>'
@@ -288,6 +291,8 @@ def fmt_file(args):
     text = open(args.fname, encoding='utf8').read()
     if mode == 'zh':
         text = fmt_zh(text)
+    elif mode == 'oreilly' and ext == "html":
+        text = fmt_oreilly(text)
     elif mode == 'packt' and ext == 'html':
         text = fmt_packt(text)
     elif mode == 'apress' and ext == 'html':
