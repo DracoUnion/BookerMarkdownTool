@@ -1,3 +1,4 @@
+import os
 from os import path
 import copy
 from multiprocessing import Pool
