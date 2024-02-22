@@ -58,6 +58,10 @@ def main():
     summary_parser.add_argument("dir", help="dir")
     summary_parser.set_defaults(func=summary_handle)
     
+    docs_summary_parser = subparsers.add_parser("docs-summary", help="generate docs summary")
+    docs_summary_parser.add_argument("dir", help="dir")
+    docs_summary_parser.set_defaults(func=docs_summary_handle)
+
     ren_parser = subparsers.add_parser("ren-md", help="rename md fname")
     ren_parser.add_argument("fname", help="file for dir name")
     ren_parser.add_argument("-t", "--threads", type=int, default=8, help="num of threads")

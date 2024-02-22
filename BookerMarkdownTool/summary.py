@@ -9,6 +9,28 @@ from .util import *
 
 RE_YAML_META = r'<!--yml([\s\S]+?)-->'
 
+def docs_summary_handle(args):
+    dir = args.dir
+    doc_dir = path.join(dir, 'docs')
+    if not path.isdir(doc_dir):
+        print('请提供文档目录')
+        return
+    doc_names = [
+        d for d in os.listdir(doc_dir)
+        if path.isdir(path.join(doc_dir, d)) and
+           path.isfile(path.join(doc_dir,d, 'README.md'))
+    ]
+    toc = []
+    for d in doc_names:
+        readme_fname = path.join(doc_dir, d, 'README.md')
+        readme = open(readme_fname, encoding='utf8').read()
+        title, _ = get_md_title(readme)
+        if not title: continue
+        toc.append(f'+   [{title}](docs/{d}/README.md)')
+
+    summary = '\n'.join(toc)
+    open(path.join(dir, 'SUMMARY.md'), 'w', encoding='utf8').write(summary)
+
 
 def summary_handle(args):
     # 读入文件列表
