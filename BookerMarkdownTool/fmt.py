@@ -90,7 +90,7 @@ def fmt_chnum(text):
 def fmt_title_num(text):
     title, pos = get_md_title(text)
     if not title: return text
-    m = re.search(r'\A(\d+)(.+)\Z', title)
+    m = re.search(r'\A(\d+)\x20(.+)\Z', title)
     if not m: return text
     num = int(m.group(1))
     title = num4d_to_zh(num) + '、' + m.group(2).strip()
