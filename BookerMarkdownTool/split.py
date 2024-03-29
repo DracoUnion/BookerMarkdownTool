@@ -2,7 +2,7 @@
 def split(args):
     fname  = args.fname
     if not fname.endswith('.md') and \
-           fname.endswith('.html'):
+       not fname.endswith('.html'):
         print('请提供 MD 或者 HTML 文件')
         return
     cont = open(fname, encoding='utf8').read()
