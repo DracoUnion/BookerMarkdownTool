@@ -102,7 +102,7 @@ def fmt_zh(text):
     text = fmt_link(text)
     text = fmt_img(text)
     text = fmt_chnum(text)
-    text = fmt_title_num(text)
+    # text = fmt_title_num(text)
     text = fmt_en_zh_gap(text)
     return text
 
