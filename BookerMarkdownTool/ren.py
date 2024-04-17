@@ -5,6 +5,7 @@ from multiprocessing import Pool
 import re
 from  urllib.parse import urlparse
 import shutil
+from .util import *
 
 RE_TITLE = r'^#+ (.+?)$'
 RE_SOURCE = r'原文：<(.+?)>'
