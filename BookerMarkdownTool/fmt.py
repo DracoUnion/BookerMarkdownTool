@@ -176,6 +176,12 @@ def fmt_sphinx(html):
         el2 = pq('<dt></dt>')
         el2.append(el_pre)
         el.replace_with(el2)
+    el_props = rt('dl.py>dd li>p:first-child>strong')
+    for el in el_props:
+        el = pq(el)
+        el_code = pq('<code></code>')
+        el_code.text(el.text())
+        el.replace_with(el_code)
     return str(rt)
 
 def fmt_oreilly(html):
