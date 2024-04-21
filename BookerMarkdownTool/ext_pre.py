@@ -22,7 +22,7 @@ def extract_pre_file(args):
     md = open(fname, encoding='utf8').read()
     md, pres = extreact_pre(md)
     open(fname, 'w', encoding='utf8').write(md)
-    open(json_fname, 'w', encoding='utf8').write(json.dumps(pres))
+    open(json_fname, 'w', encoding='utf8').write(json.dumps(pres, ensure_ascii=False))
     
 def recover_pre_handler(args):
     if path.isdir(args.fname):
