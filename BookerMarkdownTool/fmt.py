@@ -166,7 +166,7 @@ def fix_title_handler(args):
     
 def fmt_sphinx(html):
     rt = pq(html)
-    el_dts = rt('dt.py')
+    el_dts = rt('dt.sig')
     for el in el_dts:
         el = pq(el)
         el.children('a.reference, a.anchorjs-link').remove()
@@ -176,12 +176,12 @@ def fmt_sphinx(html):
         el2 = pq('<dt></dt>')
         el2.append(el_pre)
         el.replace_with(el2)
-    el_props = rt('dl.py>dd li>p:first-child>strong')
+    el_props = rt('dl:has(dt.sig)>dd li>p:first-child>strong')
     for el in el_props:
         el = pq(el)
         el_code = pq('<code></code>')
         el_code.text(el.text())
-        el.replace_with(el_code)
+        el.replace_with(el_code)    
     return str(rt)
 
 def fmt_oreilly(html):
