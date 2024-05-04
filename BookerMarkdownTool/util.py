@@ -30,7 +30,7 @@ headers = {
     'Referer': 'https://www.bilibili.com/',
 }
 
-RE_TITLE = r'\A\s*^#+\x20+(.+?)$'
+RE_TITLE = r'^#+\x20+(.+?)$'
 
 def d(name):
     return path.join(DIR, name)

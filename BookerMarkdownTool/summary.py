@@ -51,6 +51,29 @@ def summary_handle(args):
     summary = '\n'.join(toc)
     open(path.join(dir, 'SUMMARY.md'), 'w', encoding='utf8').write(summary)
     
+def ext_meta(md):
+    m = re.search(RE_YAML_META, md)
+    if not m: 
+        return {
+            'date': '0001-01-01 00:00:00',
+            'cate': '未分类',
+            'title': get_md_title(md)[0]
+        }
+    try:
+        meta = yaml.safe_load(m.group(1))
+    except Exception as ex: 
+        return {
+            'date': '0001-01-01 00:00:00',
+            'cate': '未分类',
+            'title': get_md_title(md)[0]
+        }
+    return {
+        'date': meta.get('date', '0001-01-01 00:00:00'),
+        'cate': meta.get('category', '未分类'),
+        'title': get_md_title(md)[0]
+    }
+
+
 def wiki_summary_handle(args):
     # 读入文件列表
     fnames = [f for f in os.listdir('docs') if f.endswith('.md')]
@@ -59,27 +82,16 @@ def wiki_summary_handle(args):
         print(fname)
         md = open(path.join('docs', fname), encoding='utf8').read()
         # 提取元信息
-        m = re.search(RE_YAML_META, md)
-        if not m: 
-            print('未找到元信息，已跳过')
-            continue
-        try:
-            meta = yaml.safe_load(m.group(1))
-        except Exception as ex: 
-            traceback.print_exc()
-            continue
-        dt = meta.get('date', '0001-01-01 00:00:00')
-        cate = meta.get('category', '未分类')
-        # 提取标题
-        title, _ = get_md_title(md)
-        if not title: 
+        meta = ext_meta(md)
+        if not meta['title']:
             print('未找到标题，已跳过')
             continue
+        cate = meta['cate']
         toc.setdefault(cate, [])
         toc[cate].append({
-            'title': title,
+            'title': meta['title'],
             'file': fname,
-            'date': dt,
+            'date': meta['date'],
         })
     
     # 生成目录文件
