@@ -68,7 +68,7 @@ def download_handle(args):
     el_title.remove()
     
     # 判断是否重复
-    title_esc = re.sub(r'\s', '-', fname_escape(title))
+    title_esc = re.sub(r'[^0-9a-zA-Z_\u4e00-\u9fff]', '-', title)
     fname = f'docs/{title_esc}.md'
     if path.isfile(fname):
         print(f'{title} 已存在')

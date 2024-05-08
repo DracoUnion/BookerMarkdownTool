@@ -56,7 +56,7 @@ def ren_md_file(args):
     if not title:
         print(f"未找到 {fname} 的标题")
         return
-    nfname = re.sub(r'\s', '-', fname_escape(title)) + '.md'
+    nfname = re.sub(r'[^0-9a-zA-Z_\u4e00-\u9fff]', '-', title) + '.md'
     nfname = path.join(path.dirname(fname), nfname)
     print(f'{fname} => {nfname}')
     shutil.move(fname, nfname)
