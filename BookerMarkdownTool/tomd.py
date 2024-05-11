@@ -56,6 +56,7 @@ def tomd(html, lang=None):
     return md
     
 def download_handle(args):
+    crawl_cfg['proxy'] = args.proxy
     html = requests.get(
         args.url,
         headers=default_hdrs,
