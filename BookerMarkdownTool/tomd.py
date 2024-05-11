@@ -59,6 +59,7 @@ def download_handle(args):
     html = requests.get(
         args.url,
         headers=default_hdrs,
+        proxies={'http': args.proxy, 'https': args.proxy},
     ).content.decode(args.encoding, 'ignore')
     
     # 解析标题
