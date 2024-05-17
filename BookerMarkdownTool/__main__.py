@@ -50,6 +50,7 @@ def main():
     dl_parser.add_argument("-r", "--remove", default='', help="selector of elements to remove")
     dl_parser.add_argument("-i", "--img-src", default='', help="prop names of <img> holding src")
     dl_parser.add_argument("-p", "--proxy", help="proxy")
+    dl_parser.add_argument("--retry", type=int, default=3, help="num for retry")
     dl_parser.set_defaults(func=download_handle)
     
     wiki_sum_parser = subparsers.add_parser("wiki-summary", help="generate wiki summary")

@@ -10,8 +10,10 @@ from os import path
 from readability import Document
 from EpubCrawler.img import process_img
 from EpubCrawler.config import config as crawl_cfg
+from EpubCrawler.util import request_retry
 from datetime import datetime
 from multiprocessing import Pool
+from .util import *
 import copy
 
 
@@ -57,9 +59,11 @@ def tomd(html, lang=None):
     
 def download_handle(args):
     crawl_cfg['proxy'] = args.proxy
-    html = requests.get(
-        args.url,
+    crawl_cfg['retry'] = args.retry
+    html = request_retry(
+        'GET', args.url,
         headers=default_hdrs,
+        retry=args.retry,
         proxies={'http': args.proxy, 'https': args.proxy},
     ).content.decode(args.encoding, 'ignore')
     
