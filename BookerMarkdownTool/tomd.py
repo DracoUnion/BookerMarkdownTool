@@ -13,6 +13,7 @@ from EpubCrawler.config import config as crawl_cfg
 from EpubCrawler.util import request_retry
 from datetime import datetime
 from multiprocessing import Pool
+from concurrent.futures import ThreadPoolExecutor
 from .util import *
 import copy
 
@@ -124,3 +125,21 @@ def download_handle(args):
         
     print('已完成')
 
+def download_batch_handle(args):
+    if not path.isfile(args.fname):
+        print('请提供 URL 列表文件')
+        return
+
+    urls = open(args.fname, encoding='utf8').read().split('\n')
+    urls = [
+        u for u in [u.strip() for u in urls] if u
+    ]
+    pool = ThreadPoolExecutor(args.threads)
+    hdls = []
+    for u in urls:
+        args = copy.deepcopy(args)
+        args.url = u
+        h = pool.submit(download_handle, args)
+        hdls.append(h)
+
+    for h in hdls: h.result()
