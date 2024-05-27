@@ -34,6 +34,7 @@ from .comment import *
 from .align import *
 from .flatten import *
 from .sense import *
+from .download import *
     
 def main():
     parser = argparse.ArgumentParser(prog="BookerMarkdownTool", description="iBooker WIKI tool", formatter_class=argparse.RawDescriptionHelpFormatter)
