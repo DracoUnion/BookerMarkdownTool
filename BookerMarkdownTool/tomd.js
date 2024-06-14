@@ -61,20 +61,19 @@ var myConventors = [
   // 内联代码
   {
     filter: ['code', 'tt', 'var', 'kbd'],
-    replacement: function (content) {
-      if(n.parentNode.nodeName === 'PRE')
+    replacement: function (content, node) {
+      if(node.parentNode.nodeName === 'PRE')
         return content
       // 如果内容为空或者空白， 返回空串
       if (!content) return ''
       // 去掉所有换行符
-      content = content.replace(/\r?\n|\r/g, ' ')
-  
+      content = content.replace(/[\r\n]/g, ' ')
       // 如果以反引号开头或者结尾，需要加填充避免与分隔符连上
-      var extraSpace = /^`|^ .*?[^ ].* $|`$/.test(content) ? ' ' : ''
-      // 分隔符的长度是代码中出现的最大连续反引号数量加1
-      var delimiter = '`'
-      var matches = content.match(/`+/gm) || []
-      while (matches.indexOf(delimiter) !== -1) delimiter = delimiter + '`'
+      var extraSpace = content.startsWith('`') || 
+          content.endsWith('`')? ' ': ''
+      var ms = content.match(/`+/gm) || []
+      var maxLen = Math.max(...ms.map(x => x.length), 1)
+      var delimiter = '`'.repeat(maxLen)
       // 拼接到一起
       return delimiter + extraSpace + content + extraSpace + delimiter
     }
