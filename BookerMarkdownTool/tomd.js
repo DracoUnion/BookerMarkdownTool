@@ -58,7 +58,30 @@ function cell(content, node) {
 }
 
 var myConventors = [
-
+  // 内联代码
+  {
+    filter: function (node) {
+      var hasSiblings = node.previousSibling || node.nextSibling
+      var isCodeBlock = node.parentNode.nodeName === 'PRE' && !hasSiblings
+  
+      return node.nodeName === 'CODE' && !isCodeBlock
+    },
+    replacement: function (content) {
+      // 如果内容为空或者空白， 返回空串
+      if (!content) return ''
+      // 去掉所有换行符
+      content = content.replace(/\r?\n|\r/g, ' ')
+  
+      // 如果以反引号开头或者结尾，需要加填充避免与分隔符连上
+      var extraSpace = /^`|^ .*?[^ ].* $|`$/.test(content) ? ' ' : ''
+      // 分隔符的长度是代码中出现的最大连续反引号数量加1
+      var delimiter = '`'
+      var matches = content.match(/`+/gm) || []
+      while (matches.indexOf(delimiter) !== -1) delimiter = delimiter + '`'
+      // 拼接到一起
+      return delimiter + extraSpace + content + extraSpace + delimiter
+    }
+  },
   //<p> in <td>
   {
     filter: function(n) {
