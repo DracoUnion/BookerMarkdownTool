@@ -60,13 +60,10 @@ function cell(content, node) {
 var myConventors = [
   // 内联代码
   {
-    filter: function (node) {
-      var hasSiblings = node.previousSibling || node.nextSibling
-      var isCodeBlock = node.parentNode.nodeName === 'PRE' && !hasSiblings
-  
-      return node.nodeName === 'CODE' && !isCodeBlock
-    },
+    filter: ['code', 'tt', 'var', 'kbd'],
     replacement: function (content) {
+      if(n.parentNode.nodeName === 'PRE')
+        return content
       // 如果内容为空或者空白， 返回空串
       if (!content) return ''
       // 去掉所有换行符
@@ -123,17 +120,6 @@ var myConventors = [
   {
     filter: ['style', 'base', 'meta', 'script', 'ins', 'aside', 'noscript', 'form', 'label', 'input', 'button', 'col', 'colgroup'],
     replacement: function(){return ''}
-  },
-  
-  // <code>
-  {
-    filter: ['code', 'tt', 'var', 'kbd'],
-    replacement: function(c, n) {
-      if(n.parentNode.nodeName !== 'PRE')
-        return '`' + c + '`';
-      else
-        return c;
-    }
   },
   
   //non-link <a>
