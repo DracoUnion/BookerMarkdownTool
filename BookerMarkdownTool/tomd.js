@@ -72,7 +72,7 @@ var myConventors = [
       var extraSpace = content.startsWith('`') || 
           content.endsWith('`')? ' ': ''
       var ms = content.match(/`+/gm) || []
-      var maxLen = Math.max(...ms.map(x => x.length), 1)
+      var maxLen = Math.max(...ms.map(x => x.length), 0) + 1
       var delimiter = '`'.repeat(maxLen)
       // 拼接到一起
       return delimiter + extraSpace + content + extraSpace + delimiter
