@@ -172,6 +172,7 @@ def fix_title_handler(args):
         fix_title([path.join(dir, f) for f in fnames])
     
 def fmt_sphinx(html):
+    html = rm_xml_header(html)
     rt = pq(html)
     el_dts = rt('dt.sig')
     for el in el_dts:
@@ -246,9 +247,7 @@ def process_apress_para(el_para, root):
     el_para.replace_with(el_new_para)
 
 def fmt_apress(html):
-    html = html.replace('<?xml version="1.0" encoding="utf-8"?>', '')
-    html = re.sub(r'xmlns=".+?"', '', html)
-    html = re.sub(r'xmlns:epub=".+?"', '', html)
+    html = rm_xml_header(html)
     root = pq(html)
     
     el_pres = root('.ProgramCode')

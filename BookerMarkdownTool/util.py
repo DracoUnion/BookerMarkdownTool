@@ -233,3 +233,9 @@ def get_md_credit(text):
     RE_CREDIT = r'^>\x20(?:原文|来源|链接|译者|协议)：.*$'
     credits = re.findall(RE_CREDIT, text, flags=re.M)
     return '\n> \n'.join(credits)
+
+def rm_xml_header(html):
+    html = re.sub(r'<\?xml[^>]*\?>', '', html)
+    html = re.sub(r'xmlns(:\w+)?=".+?"', '', html)
+    html = re.sub(r'</?\w+', lambda m: m.group().lower(), html)
+    return html
