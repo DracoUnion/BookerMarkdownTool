@@ -297,3 +297,31 @@ def rec_trans_handler(args):
         make_dir_handle(rec_trans_file)(args)
     else:
         rec_trans_file(args)
+
+def split_totrans_en(en, limit):
+    if len(en) <= limit: return [en]
+    ens = re.split(r'(?<=[\.\?!:;"]\x20)', en)
+    return ens
+
+def split_totrans_file(args):
+    fname = args.fname
+    if not fname.endswith('.yaml'):
+       raise ValueError('请提供 YAML 文件！')
+    totrans = yaml.safe_load(open(fname, encoding='utf8').read())
+    totrans_new = []
+    for it in totrans:
+        en = it.get('en')
+        if not en: continue
+        ens = split_totrans_en(en, args.limit)
+        for en in ens:
+            totrans_new.append({**it, 'en': en})
+    for i, it in enumerate(totrans_new):
+        it['id'] = f'totrans-split-{i}'
+    open(fname, 'w', encoding='utf8') \
+        .write(yaml.safe_dump(totrans_new, allow_unicode=True))
+
+def split_totrans_handler(args):
+    if path.isdir(args.fname):
+        make_dir_handle(split_totrans_file)(args)
+    else:
+        split_totrans_file(args)
