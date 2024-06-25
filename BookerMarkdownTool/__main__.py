@@ -165,7 +165,7 @@ def main():
     make_to_trans.add_argument("-t", "--threads", type=int, default=8, help="thread count")
     make_to_trans.set_defaults(func=rec_trans_handler)
 
-    split_to_trans = subparsers.add_parser("split-trans", help="split too long en")
+    split_to_trans = subparsers.add_parser("split-totrans", help="split too long en")
     split_to_trans.add_argument("fname", help="en yaml file name")
     split_to_trans.add_argument("-t", "--threads", type=int, default=8, help="thread count")
     split_to_trans.add_argument("-l", "--limit", type=int, default=4000, help="length limit")
