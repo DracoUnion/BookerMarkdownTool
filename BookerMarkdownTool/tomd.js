@@ -131,7 +131,7 @@ var myConventors = [
   
   // <pre>
   {
-    filter: 'pre',
+    filter: ['pre', 'textarea'],
     replacement: function(c) {
         return '\n\n```\n' + c + '\n```\n\n';
     }
