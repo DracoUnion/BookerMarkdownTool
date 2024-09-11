@@ -8,7 +8,7 @@ import shutil
 from .util import *
 
 RE_TITLE = r'^#+ (.+?)$'
-RE_SOURCE = r'原文：<(.+?)>'
+RE_SOURCE = r'原文：.*?(https?://[\w\-\./\+%\?=&#]+)'
 RE_SRC_TITLE = r'[\w\-]{15,}'
 
 
