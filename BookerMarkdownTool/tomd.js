@@ -58,6 +58,16 @@ function cell(content, node) {
 }
 
 var myConventors = [
+
+  //<math>
+  {
+    filter: ['math'],
+    replacement: function (c, n) {
+	  var tex = n.getAttribute('alttext')
+	  return (tex? '$' + tex.trim() + '$': c)
+    }
+  },
+
   // 内联代码
   {
     filter: ['code', 'tt', 'var', 'kbd'],
@@ -180,15 +190,6 @@ var myConventors = [
 	  if(sup[c]) return sup[c]
 	  else if(c.length == 1) return '^' + c
 	  else return '^(' + c + ')'
-    }
-  },
-
-  //<math>
-  {
-    filter: ['math'],
-    replacement: function (c, n) {
-	  var tex = n.getAttribute('alttext')
-	  return (tex? '$' + tex.trim() + '$': c)
     }
   },
 
