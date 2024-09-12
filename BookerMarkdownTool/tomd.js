@@ -183,6 +183,15 @@ var myConventors = [
     }
   },
 
+  //<math>
+  {
+    filter: ['math'],
+    replacement: function (c, n) {
+	  var tex = n.getAttribute('alttext')
+	  return (tex? '$' + tex.trim() + '$': c)
+    }
+  },
+
 ];
 
 if(module == require.main) main()
