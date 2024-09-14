@@ -23,7 +23,11 @@ def docs_summary_handle(args):
     toc = []
     for d in doc_names:
         readme_fname = path.join(doc_dir, d, 'README.md')
-        readme = open(readme_fname, encoding='utf8').read()
+        readme = open(
+            readme_fname,
+            encoding='utf8',
+            errors='ignore',
+        ).read()
         title, _ = get_md_title(readme)
         if not title: continue
         toc.append(f'+   [{title}](docs/{d}/README.md)')
@@ -44,7 +48,11 @@ def summary_handle(args):
     for f in fnames:
         fullf = path.join(dir, f)
         print(fullf)
-        cont = open(fullf, encoding='utf8').read()
+        cont = open(
+            fullf, 
+            encoding='utf8',
+            errors='ignore',
+        ).read()
         title, _ = get_md_title(cont)
         if not title: continue
         toc.append(f'+   [{title}]({f})')
@@ -80,7 +88,11 @@ def wiki_summary_handle(args):
     toc = OrderedDict()
     for fname in fnames:
         print(fname)
-        md = open(path.join('docs', fname), encoding='utf8').read()
+        md = open(
+            path.join('docs', fname), 
+            encoding='utf8',
+            errors='ignore',
+        ).read()
         # 提取元信息
         meta = ext_meta(md)
         if not meta['title']:
