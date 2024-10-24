@@ -19,7 +19,10 @@ def merge(args):
         if path.basename(f) not in ['README.md', 'SUMMARY.md']
     ]
     
-    mds = [open(f, encoding='utf8').read() for f in fnames]
+    mds = [
+        open(f, encoding='utf8', errors='ignore').read() 
+        for f in fnames
+    ]
     for i in range(0, len(mds) - 1):
         if mds[i].count('\n') < args.lines:
             mds[i+1] = mds[i] + '\n\n' + mds[i+1]
