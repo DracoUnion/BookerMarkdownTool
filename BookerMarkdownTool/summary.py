@@ -31,6 +31,16 @@ def docs_summary_handle(args):
         title, _ = get_md_title(readme)
         if not title: continue
         toc.append(f'+   [{title}](docs/{d}/README.md)')
+        summary_fname = path.join(doc_dir, d, 'SUMMARY.md')
+        if args.all and path.isfile(summary_fname):
+            summary = open(
+                summary_fname,
+                encoding='utf8',
+                errors='ignore',
+            ).read().strip()
+            summary = re.sub(r'^', 'x20' * 4, summary, re.M)
+            toc.append(summary)
+
 
     summary = '\n'.join(toc)
     open(path.join(dir, 'SUMMARY.md'), 'w', encoding='utf8').write(summary)

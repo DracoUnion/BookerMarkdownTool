@@ -75,6 +75,7 @@ def main():
     
     docs_summary_parser = subparsers.add_parser("docs-summary", help="generate docs summary")
     docs_summary_parser.add_argument("dir", help="dir")
+    docs_summary_parser.add_argument("-a", "--all", action='store_true', help="whether to append sub toc")
     docs_summary_parser.set_defaults(func=docs_summary_handle)
 
     ren_parser = subparsers.add_parser("ren-md", help="rename md fname")
