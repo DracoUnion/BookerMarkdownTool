@@ -39,6 +39,7 @@ def docs_summary_handle(args):
                 errors='ignore',
             ).read().strip()
             summary = re.sub(r'^', '\x20' * 4, summary, flags=re.M)
+            summary = re.sub(r'\]\(', f'](docs/{d}/', summary, flags=re.M)
             toc.append(summary)
 
 
