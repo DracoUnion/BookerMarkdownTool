@@ -38,7 +38,7 @@ def docs_summary_handle(args):
                 encoding='utf8',
                 errors='ignore',
             ).read().strip()
-            summary = re.sub(r'^', 'x20' * 4, summary, re.M)
+            summary = re.sub(r'^', '\x20' * 4, summary, flags=re.M)
             toc.append(summary)
 
 
