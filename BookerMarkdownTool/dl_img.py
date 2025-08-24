@@ -18,7 +18,7 @@ def dl_img_handle(args):
         hash_ = hashlib.md5(url.encode('utf8')).hexdigest()
         data = requests.get(url).content
         img_fname = path.join(
-            path.dirname(fname, 'img',  f'{hash_}.png'))
+            path.dirname(fname), 'img',  f'{hash_}.png')
         open(img_fname, 'wb').write(data)
         md = md.replace(url, f'img/{hash_}.png')
 
