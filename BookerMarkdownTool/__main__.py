@@ -34,6 +34,7 @@ from .comment import *
 from .align import *
 from .flatten import *
 from .sense import *
+from .dl_img import *
     
 def main():
     parser = argparse.ArgumentParser(prog="BookerMarkdownTool", description="iBooker WIKI tool", formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -181,6 +182,11 @@ def main():
     sense_parser.add_argument("fname", help="md or txt file name")
     sense_parser.set_defaults(func=filter_sense_file)
    
+    dlimg_parser = subparsers.add_parser("dl-img", help="download imgs")
+    dlimg_parser.add_argument("fname", help="md or txt file name")
+    dlimg_parser.set_defaults(func=dl_img_handle)
+   
+
     args = parser.parse_args()
     args.func(args)
 
