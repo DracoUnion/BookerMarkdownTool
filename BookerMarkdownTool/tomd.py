@@ -34,6 +34,9 @@ def tomd_file(args):
     open(ofname, 'w', encoding='utf8').write(md)
 
 def tomd_handle(args):
+    if not find_cmd_path('node'):
+        print('请安装 NodeJS 并设置环境变量！')
+        return
     if path.isdir(args.fname):
         make_dir_handle(tomd_file)(args)
     else:
