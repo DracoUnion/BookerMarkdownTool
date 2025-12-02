@@ -38,6 +38,20 @@ def d(name):
 def asset(name=''):
     return path.join(DIR, 'assets', name)
 
+def md2html_pandoc(md):
+    fname = path.join(tempfile.gettempdir(), uuid.uuid4().hex + '.md')
+    ofname = fname[:-3] + '.html'
+    open(fname, 'w', encoding='utf8').write(md)
+    subp.Popen(['pandoc', fname, '-o', ofname]).communicate()
+    html = open(ofname, encoding='utf8').read()
+    safe_remove(fname)
+    safe_remove(ofname)
+    return html
+
+def safe_remove(fname):
+    try: os.unlink(fname)
+    except: pass
+
 def opti_img(img, mode, colors):
     if mode == 'quant':
         return imgyaso.pngquant_bts(img, colors)
