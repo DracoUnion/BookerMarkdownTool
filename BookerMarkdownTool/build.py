@@ -48,6 +48,16 @@ def process_img(html: str, base: str, imgs: Dict[str, bytes]) -> str:
 
     return str(rt)
 
+def tr_articles(fname, art, imgs):
+    md = open(fname, encoding='utf8').read()
+    art.update(get_article(md))
+    art['content'] = process_img(
+            art['content'], 
+            path.dirname(fname),
+            imgs,
+    )
+
+
 def build(args):
     if not find_cmd_path('pandoc'):
         print('请安装 Pandoc 并设置环境变量！')
@@ -66,16 +76,18 @@ def build(args):
     toc = get_toc(summary, args.dir)
     articles = []
     imgs = {}
+    pool = ThreadPoolExecutor(args.threads)
+    hdls = []
     for fname in toc:
         print(fname)
-        md = open(fname, encoding='utf8').read()
-        art = get_article(md)
-        art['content'] = process_img(
-             art['content'], 
-             path.dirname(fname),
-             imgs,
-        )
+        art = {}
         articles.append(art)
+        h = pool.submit(tr_articles, fname, art, imgs)
+        hdls.append(h)
+        if len(hdls) >= args.threads:
+            for h in hdls: h.result()
+
+    for h in hdls: h.result()
     
     readme = open(path.join(args.dir, 'README.md'), encoding='utf8').read()
     readme_html = md2html_pandoc(readme)
