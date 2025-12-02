@@ -49,6 +49,9 @@ def process_img(html: str, base: str, imgs: Dict[str, bytes]) -> str:
     return str(rt)
 
 def build(args):
+    if not find_cmd_path('pandoc'):
+        print('请安装 Pandoc 并设置环境变量！')
+        return
     args.dir = path.abspath(args.dir)
     if not path.isdir(args.dir):
         print('请提供文档目录！')
