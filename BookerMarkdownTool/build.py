@@ -3,6 +3,7 @@ from pyquery import PyQuery as pq
 from os import path
 from typing import *
 from GenEpub import gen_epub
+from urllib.parse import unquote_plus
 
 def get_toc(md: str, base: str) -> List[str]:
     html = md2html_pandoc(md)
@@ -11,7 +12,7 @@ def get_toc(md: str, base: str) -> List[str]:
     for el in el_links:
         el = pq(el)
         link = el.attr('href')
-        link = path.join(base, link)
+        link = path.join(base, unquote_plus(link))
         toc.append(link)
     return toc
 
@@ -37,7 +38,7 @@ def process_img(html: str, base: str, imgs: Dict[str, bytes]) -> str:
         if re.search('^https?://', fname):
             continue
         print(fname)
-        fname = path.join(base, fname)
+        fname = path.join(base, unquote_plus(fname))
         if not path.isfile(fname):
             print(f'{fname} 未找到')
             continue
