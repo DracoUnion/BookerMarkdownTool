@@ -12,14 +12,17 @@ def dl_img_handle(args):
     md = open(fname, encoding='utf8').read()
     mts = list(re.finditer(r'\[[^\]]*\]\(([^\)]+)\)', md))
     for m in mts:
-        url = m.group(1)
-        if not url.startswith('http'): continue
-        print(url)
-        hash_ = hashlib.md5(url.encode('utf8')).hexdigest()
-        data = requests.get(url).content
-        img_fname = path.join(
-            path.dirname(fname), 'img',  f'{hash_}.png')
-        open(img_fname, 'wb').write(data)
-        md = md.replace(url, f'img/{hash_}.png')
+        try:
+            url = m.group(1)
+            if not url.startswith('http'): continue
+            print(url)
+            hash_ = hashlib.md5(url.encode('utf8')).hexdigest()
+            data = requests.get(url).content
+            img_fname = path.join(
+                path.dirname(fname), 'img',  f'{hash_}.png')
+            open(img_fname, 'wb').write(data)
+            md = md.replace(url, f'img/{hash_}.png')
+        except:
+            traceback.print_exc()
 
     open(fname, 'w', encoding='utf8').write(md)
