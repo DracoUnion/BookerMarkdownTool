@@ -10,7 +10,7 @@ def dl_img_handle(args):
     img_dir = path.join(path.dirname(fname), 'img')
     safe_mkdir(img_dir)
     md = open(fname, encoding='utf8').read()
-    mts = list(re.finditer(r'\[[^\]]*\]\(([^\)]+)\)', md))
+    mts = list(re.finditer(r'!\[[^\]]*\]\(([^\)]+)\)', md))
     for m in mts:
         try:
             url = m.group(1)
