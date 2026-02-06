@@ -36,6 +36,7 @@ from .flatten import *
 from .sense import *
 from .dl_img import *
 from .build import *
+from .cp_img import *
     
 def main():
     parser = argparse.ArgumentParser(prog="BookerMarkdownTool", description="iBooker WIKI tool", formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -192,6 +193,12 @@ def main():
     build_parser.add_argument("-t", "--threads", type=int, default=8, help="thread num")
     build_parser.set_defaults(func=build)
  
+    copy_parser = subparsers.add_parser("cp-img", help="copy imgs in mds")
+    copy_parser.add_argument("fname", help="fname")
+    copy_parser.add_argument("src", help="source dir")
+    copy_parser.add_argument("dst", help="dest dir")
+    copy_parser.set_defaults(func=cp_img)
+
     args = parser.parse_args()
     args.func(args)
 
