@@ -10,7 +10,7 @@ authors = [
 dynamic = ["version"]
 description = "iBooker/ApacheCN 知识库抓取工具"
 readme = "README.md"
-license = {text = "SATA"}
+license = {file = "LICENSE"}
 requires-python = ">=3.6"
 keywords = [
     "wiki",
