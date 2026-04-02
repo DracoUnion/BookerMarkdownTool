@@ -11,9 +11,10 @@ def get_toc(md: str, base: str) -> List[str]:
     toc = []
     for el in el_links:
         el = pq(el)
-        if el.is_('li') and not el.find('a'):
-            txt = el.text().strip()
-            toc.append('text:' + txt)
+        if el.is_('li'):
+            if not el.find('a'):
+                txt = el.text().strip()
+                toc.append('text:' + txt)
             continue
         link = el.attr('href')
         link = path.join(base, unquote_plus(link))
