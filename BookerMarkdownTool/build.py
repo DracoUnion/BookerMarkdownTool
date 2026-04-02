@@ -12,7 +12,7 @@ def get_toc(md: str, base: str) -> List[str]:
     for el in el_links:
         el = pq(el)
         if el.is_('li'):
-            if not el.find('a'):
+            if not el.children('a') and not el.children('p > a'):
                 txt = el.text().strip()
                 toc.append('text:' + txt)
             continue
