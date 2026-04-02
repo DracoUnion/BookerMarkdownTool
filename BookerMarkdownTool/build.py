@@ -7,15 +7,17 @@ from urllib.parse import unquote_plus
 
 def get_toc(md: str, base: str) -> List[str]:
     html = md2html_pandoc(md)
-    el_links = pq(html).find('li, li a')
+    el_links = pq(html).find('li a')
     toc = []
     for el in el_links:
         el = pq(el)
+        '''
         if el.is_('li'):
             if not el.children('a') and not el.children('p > a'):
                 txt = el.text().strip()
                 toc.append('text:' + txt)
             continue
+        '''
         link = el.attr('href')
         link = path.join(base, unquote_plus(link))
         toc.append(link)
