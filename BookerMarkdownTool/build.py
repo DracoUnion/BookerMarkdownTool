@@ -7,10 +7,14 @@ from urllib.parse import unquote_plus
 
 def get_toc(md: str, base: str) -> List[str]:
     html = md2html_pandoc(md)
-    el_links = pq(html).find('a')
+    el_links = pq(html).find('li, li a')
     toc = []
     for el in el_links:
         el = pq(el)
+        if el.is_('li') and not el.find('a'):
+            txt = el.text().strip()
+            toc.append('text:' + txt)
+            continue
         link = el.attr('href')
         link = path.join(base, unquote_plus(link))
         toc.append(link)
@@ -81,6 +85,9 @@ def build(args):
     hdls = []
     for fname in toc:
         print(fname)
+        if fname.startswith('text:'):
+            articles.append({'title': fname[5:], 'content': ''})
+            continue
         art = {}
         articles.append(art)
         h = pool.submit(tr_articles, fname, art, imgs)
@@ -89,6 +96,7 @@ def build(args):
             for h in hdls: h.result()
 
     for h in hdls: h.result()
+    articles = [a for a in articles if a]
     
     readme = open(path.join(args.dir, 'README.md'), encoding='utf8').read()
     readme_html = md2html_pandoc(readme)
