@@ -135,6 +135,8 @@ def safe(default=None):
         def inner(*args, **kw):
             print(123123)
             try: return f(*args, **kw)
+            except KeyboardInterrupt:
+                raise
             except: 
                 traceback.print_exc()
                 return default
@@ -156,6 +158,8 @@ def find_cmd_path(name):
 def make_dir_handle(file_handle):
     def file_handle_safe(*args, **kw):
         try: file_handle(*args, **kw)
+        except KeyboardInterrupt:
+            raise
         except: traceback.print_exc()
         
     def dir_handle(args):

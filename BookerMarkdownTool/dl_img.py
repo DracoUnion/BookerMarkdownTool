@@ -22,6 +22,8 @@ def dl_img_handle(args):
                 path.dirname(fname), 'img',  f'{hash_}.png')
             open(img_fname, 'wb').write(data)
             md = md.replace(url, f'img/{hash_}.png')
+        except KeyboardInterrupt:
+            raise
         except:
             traceback.print_exc()
 
