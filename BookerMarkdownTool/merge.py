@@ -26,10 +26,9 @@ def merge(args):
     ]
 
     md = '\n\n'.join(mds)
-    cres = chunk_markdown(md, path.basename(dir))
-    chunks = [c.content for c in cres.chunks]
+    lines = split_md_lines(md)
     groups = ['']
-    for c in chunks:
+    for c in lines:
         if groups[-1].count('\n') < args.lines:
             groups[-1] += '\n\n' + c
         else:

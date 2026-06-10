@@ -257,3 +257,39 @@ def rm_xml_header(html):
     html = re.sub(r'xmlns(:\w+)?=".+?"', '', html)
     html = re.sub(r'</?\w+', lambda m: m.group().lower(), html)
     return html
+
+
+def group_chunks(chunks, limit=8000):
+    groups = ['']
+    for c in chunks:
+        if len(groups[-1]) +  len(c) + 2 > limit:
+            groups.append(c)
+        else:
+            groups[-1] += '\n\n' + c
+    groups = [g for g in groups if g]
+    return groups
+
+def split_md_lines(md):
+    lines = md.split('\n')
+    res = []
+    in_code = False
+    code = ''
+    for l in lines:
+        if '```' in l:
+            if in_code: 
+                # 结尾
+                code += l
+                res.append(code)
+                code = ''
+            else:
+                # 开头
+                code += l + '\n'
+            in_code = not in_code
+        elif not in_code:
+            if l.strip(): res.append(l)
+        elif in_code:
+            code += l + '\n'
+    # 处理结尾缺失情况：
+    if code:
+        res.append(code + '```')
+    return res
