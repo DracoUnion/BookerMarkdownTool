@@ -95,8 +95,8 @@ def build(args):
         articles.append(art)
         h = pool.submit(tr_articles, fname, art, imgs)
         hdls.append(h)
-        if len(hdls) >= args.threads:
-            for h in hdls: h.result()
+        # if len(hdls) >= args.threads:
+        #     for h in hdls: h.result()
 
     for h in hdls: h.result()
     articles = [a for a in articles if a]
