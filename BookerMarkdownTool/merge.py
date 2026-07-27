@@ -13,7 +13,12 @@ def merge(args):
         for base, _, fnames in os.walk(dir) 
         for f in fnames 
         if f.endswith('.md')
+    ] if args.recur else [
+        path.join(dir, f)
+        for f in os.listdir(dir)
+        if f.endswith('.md')
     ]
+        
     # 过滤 README SUMMARY
     fnames = [
         f for f in fnames
