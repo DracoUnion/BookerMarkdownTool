@@ -43,3 +43,10 @@ def opti_md_dir(args):
         pool.apply_async(opti_md_file, [args])
     pool.close()
     pool.join()
+
+
+def reg_subparser(subparsers):
+    opti_md_parser = subparsers.add_parser("opti-md", help="optimize markdown")
+    opti_md_parser.add_argument("fname", help="file name")
+    opti_md_parser.add_argument("-t", "--threads", type=int, default=8, help="num of threads")
+    opti_md_parser.set_defaults(func=opti_md_handle)

@@ -60,3 +60,11 @@ def ren_md_file(args):
     nfname = path.join(path.dirname(fname), nfname)
     print(f'{fname} => {nfname}')
     shutil.move(fname, nfname)
+
+
+def reg_subparser(subparsers):
+    ren_parser = subparsers.add_parser("ren-md", help="rename md fname")
+    ren_parser.add_argument("fname", help="file for dir name")
+    ren_parser.add_argument("-t", "--threads", type=int, default=8, help="num of threads")
+    ren_parser.add_argument("-b", "--by", type=str, choices=['title', 'src'], default='src', help="where to extract fname")
+    ren_parser.set_defaults(func=ren_md_handle)

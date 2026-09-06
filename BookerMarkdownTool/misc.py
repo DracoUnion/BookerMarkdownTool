@@ -64,3 +64,13 @@ def convert_cdrive_log(args):
         
     res = ''.join(res)
     open(fname + '.md', 'w', encoding='utf8').write(res)
+
+
+def reg_subparser(subparsers):
+    config_proj_parser = subparsers.add_parser("config-proj", help="config proj")
+    config_proj_parser.add_argument("dir", help="dir name")
+    config_proj_parser.set_defaults(func=config_proj)
+
+    cdrive_log_parser = subparsers.add_parser("cdrive-log", help="convert cdrive log to md")
+    cdrive_log_parser.add_argument("fname", help="log fname")
+    cdrive_log_parser.set_defaults(func=convert_cdrive_log)

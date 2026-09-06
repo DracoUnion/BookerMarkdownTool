@@ -26,3 +26,9 @@ def account_handle(args):
     cont = open(args.file, encoding='utf8').read()
     total, zh_count, en_count = account_words(cont)
     print(f'中文字数：{zh_count}\n英文字数：{en_count}\n总字数：{total}')
+
+
+def reg_subparser(subparsers):
+    acc_parser = subparsers.add_parser("account", help="account words")
+    acc_parser.add_argument("file", help="file")
+    acc_parser.set_defaults(func=account_handle)

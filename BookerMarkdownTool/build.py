@@ -112,3 +112,10 @@ def build(args):
     )
     gen_epub(articles, imgs, None, epub_fname)
     print(epub_fname)
+
+
+def reg_subparser(subparsers):
+    build_parser = subparsers.add_parser("build", help="build epub")
+    build_parser.add_argument("dir", help="doc dir")
+    build_parser.add_argument("-t", "--threads", type=int, default=8, help="thread num")
+    build_parser.set_defaults(func=build)

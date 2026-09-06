@@ -26,3 +26,10 @@ def flatten_dir(args):
             )
             
     print('done...')
+
+
+def reg_subparser(subparsers):
+    flatten_parser = subparsers.add_parser("flatten", help="flatten dir")
+    flatten_parser.add_argument("dir", help="dir name")
+    flatten_parser.add_argument("-d", "--delim", default='：', help="delimiter")
+    flatten_parser.set_defaults(func=flatten_dir)

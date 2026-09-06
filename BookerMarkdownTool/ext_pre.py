@@ -44,3 +44,15 @@ def recover_pre_file(args):
     md = recover_pre(md, pres)
     open(fname, 'w', encoding='utf8').write(md)
     os.unlink(json_fname)
+
+
+def reg_subparser(subparsers):
+    ext_pre_parser = subparsers.add_parser("ext-pre", help="extract pre from md")
+    ext_pre_parser.add_argument("fname", help="file name")
+    ext_pre_parser.add_argument("-t", "--threads", type=int, default=8, help="thread count")
+    ext_pre_parser.set_defaults(func=extract_pre_handler)
+
+    rec_pre_parser = subparsers.add_parser("rec-pre", help="recover pre in md")
+    rec_pre_parser.add_argument("fname", help="file name")
+    rec_pre_parser.add_argument("-t", "--threads", type=int, default=8, help="thread count")
+    rec_pre_parser.set_defaults(func=recover_pre_handler)

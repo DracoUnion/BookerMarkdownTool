@@ -126,3 +126,17 @@ def wiki_summary_handle(args):
             file = quote_plus(art['file'])
             summary += f'    +   [{title}](docs/{file})\n'
     open('SUMMARY.md', 'w', encoding='utf8').write(summary)
+
+
+def reg_subparser(subparsers):
+    wiki_sum_parser = subparsers.add_parser("wiki-summary", help="generate wiki summary")
+    wiki_sum_parser.set_defaults(func=wiki_summary_handle)
+
+    summary_parser = subparsers.add_parser("summary", help="generate summary")
+    summary_parser.add_argument("dir", help="dir")
+    summary_parser.set_defaults(func=summary_handle)
+
+    docs_summary_parser = subparsers.add_parser("docs-summary", help="generate docs summary")
+    docs_summary_parser.add_argument("dir", help="dir")
+    docs_summary_parser.add_argument("-a", "--all", action='store_true', help="whether to append sub toc")
+    docs_summary_parser.set_defaults(func=docs_summary_handle)

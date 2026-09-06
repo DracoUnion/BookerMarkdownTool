@@ -321,3 +321,16 @@ def fmt_handle(args):
         make_dir_handle(fmt_file)(args)
     else:
         fmt_file(args)
+
+
+def reg_subparser(subparsers):
+    fmtzh_parser = subparsers.add_parser("fmt", help="format markdown and html")
+    fmtzh_parser.add_argument("mode", help="fmt mode")
+    fmtzh_parser.add_argument("fname", help="file name")
+    fmtzh_parser.add_argument("-t", "--threads", type=int, default=8, help="num of threads")
+    fmtzh_parser.set_defaults(func=fmt_handle)
+
+    fix_title_trans = subparsers.add_parser("fix-title", help="fix md title")
+    fix_title_trans.add_argument("dir", help="dir of md files")
+    fix_title_trans.add_argument("--re", help="re of pref")
+    fix_title_trans.set_defaults(func=fix_title_handler)

@@ -26,6 +26,12 @@ def filter_sense_file(args):
             cont = cont.replace(w, nw)
             
     open(args.fname, 'w', encoding='utf8').write(cont)
+
+
+def reg_subparser(subparsers):
+    sense_parser = subparsers.add_parser("filter-sense", help="filter sensitive words")
+    sense_parser.add_argument("fname", help="md or txt file name")
+    sense_parser.set_defaults(func=filter_sense_file)
     
 
             

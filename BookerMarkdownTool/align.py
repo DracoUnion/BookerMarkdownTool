@@ -325,3 +325,31 @@ def split_totrans_handler(args):
         make_dir_handle(split_totrans_file)(args)
     else:
         split_totrans_file(args)
+
+
+def reg_subparser(subparsers):
+    align_parser = subparsers.add_parser("align", help="align en and zh md")
+    align_parser.add_argument("en", help="en md name")
+    align_parser.add_argument("zh", help="zh md name")
+    align_parser.set_defaults(func=align_handler)
+
+    align_dir_parser = subparsers.add_parser("align-dir", help="align en and zh md")
+    align_dir_parser.add_argument("en", help="en md dir name")
+    align_dir_parser.add_argument("zh", help="zh md dir name")
+    align_dir_parser.set_defaults(func=align_dir_handler)
+
+    make_to_trans = subparsers.add_parser("mk-totrans", help="en md to yml")
+    make_to_trans.add_argument("fname", help="en md file name")
+    make_to_trans.add_argument("-t", "--threads", type=int, default=8, help="thread count")
+    make_to_trans.set_defaults(func=make_totrans_handler)
+
+    rec_trans_parser = subparsers.add_parser("rec-trans", help="zh yaml to md")
+    rec_trans_parser.add_argument("fname", help="zh yaml file name")
+    rec_trans_parser.add_argument("-t", "--threads", type=int, default=8, help="thread count")
+    rec_trans_parser.set_defaults(func=rec_trans_handler)
+
+    split_to_trans = subparsers.add_parser("split-totrans", help="split too long en")
+    split_to_trans.add_argument("fname", help="en yaml file name")
+    split_to_trans.add_argument("-t", "--threads", type=int, default=8, help="thread count")
+    split_to_trans.add_argument("-l", "--limit", type=int, default=4000, help="length limit")
+    split_to_trans.set_defaults(func=split_totrans_handler)

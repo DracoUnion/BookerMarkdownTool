@@ -28,3 +28,9 @@ def dl_img_handle(args):
             traceback.print_exc()
 
     open(fname, 'w', encoding='utf8').write(md)
+
+
+def reg_subparser(subparsers):
+    dlimg_parser = subparsers.add_parser("dl-img", help="download imgs")
+    dlimg_parser.add_argument("fname", help="md or txt file name")
+    dlimg_parser.set_defaults(func=dl_img_handle)

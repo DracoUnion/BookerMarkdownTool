@@ -26,3 +26,11 @@ def cp_img(args):
             os.remove(fdst)
         print(f'{fsrc} -> {fdst}')
         shutil.copy(fsrc, fdst)
+
+
+def reg_subparser(subparsers):
+    copy_parser = subparsers.add_parser("cp-img", help="copy imgs in mds")
+    copy_parser.add_argument("fname", help="fname")
+    copy_parser.add_argument("src", help="source dir")
+    copy_parser.add_argument("dst", help="dest dir")
+    copy_parser.set_defaults(func=cp_img)

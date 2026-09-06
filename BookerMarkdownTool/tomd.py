@@ -292,3 +292,36 @@ def tomd_handle(args):
     else:
         tomd_file(args)
 
+
+def reg_subparser(subparsers):
+    dl_parser = subparsers.add_parser("download", help="download a page")
+    dl_parser.add_argument("url", help="url")
+    dl_parser.add_argument("-e", "--encoding", default='utf-8', help="encoding")
+    dl_parser.add_argument("-c", "--category", default='未分类', help="category")
+    dl_parser.add_argument("-t", "--title", default='title', help="selector of article title")
+    dl_parser.add_argument("-b", "--body", default='', help="selector of article body")
+    dl_parser.add_argument("-r", "--remove", default='', help="selector of elements to remove")
+    dl_parser.add_argument("-i", "--img-src", default='', help="prop names of <img> holding src")
+    dl_parser.add_argument("-p", "--proxy", help="proxy")
+    dl_parser.add_argument("--retry", type=int, default=3, help="num for retry")
+    dl_parser.set_defaults(func=download_handle)
+
+    dl_batch_parser = subparsers.add_parser("download-batch", help="download pages")
+    dl_batch_parser.add_argument("fname", help="url file name")
+    dl_batch_parser.add_argument("-e", "--encoding", default='utf-8', help="encoding")
+    dl_batch_parser.add_argument("-c", "--category", default='未分类', help="category")
+    dl_batch_parser.add_argument("-t", "--title", default='title', help="selector of article title")
+    dl_batch_parser.add_argument("-b", "--body", default='', help="selector of article body")
+    dl_batch_parser.add_argument("-r", "--remove", default='', help="selector of elements to remove")
+    dl_batch_parser.add_argument("-i", "--img-src", default='', help="prop names of <img> holding src")
+    dl_batch_parser.add_argument("-p", "--proxy", help="proxy")
+    dl_batch_parser.add_argument("--threads", type=int, default=8, help="threads num")
+    dl_batch_parser.add_argument("--retry", type=int, default=3, help="num for retry")
+    dl_batch_parser.set_defaults(func=download_batch_handle)
+
+    tomd_parser = subparsers.add_parser("tomd", help="html to markdown")
+    tomd_parser.add_argument("fname", help="file or dir name")
+    tomd_parser.add_argument("-t", "--threads", type=int, default=8, help="num of threads")
+    tomd_parser.add_argument("-l", "--lang", help="code language")
+    tomd_parser.set_defaults(func=tomd_handle)
+
