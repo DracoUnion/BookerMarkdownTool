@@ -47,6 +47,9 @@ dependencies = [
     "EpubCrawler",
     "imgyaso",
     "pyturndown",
+    "markdown",
+    "pygments",
+    "premailer",
 ]
 
 [project.urls]

@@ -46,7 +46,7 @@ pip install -e .
 
 ### 依赖
 
-Python 依赖（安装时自动拉取）：`requests`、`pyquery`、`readability-lxml`、`pyyaml`、`EpubCrawler`、`imgyaso`、`pyturndown`。HTML 转 Markdown 依赖 `pyturndown`（Turndown 的 Python 移植，不需要 Node.js）。
+Python 依赖（安装时自动拉取）：`requests`、`pyquery`、`readability-lxml`、`pyyaml`、`EpubCrawler`、`imgyaso`、`pyturndown`、`markdown`、`pygments`、`premailer`。HTML 转 Markdown 依赖 `pyturndown`（Turndown 的 Python 移植，不需要 Node.js）。
 
 可选的外部工具（不在 pip 依赖中，按需安装）：
 
@@ -85,6 +85,7 @@ Python 依赖（安装时自动拉取）：`requests`、`pyquery`、`readability
 | `config-proj` | 交互式配置站点项目 | `<目录>` |
 | `cdrive-log` | CDrive 上传日志转 md 表格 | `<文件>` |
 | `code-comment` | 用 chatglm 给代码加注释 | `<路径> -l -p -m` |
+| `wx-html` | Markdown → 微信公众号 HTML 排版 | `<文件> --theme --font-size -o --inline` |
 
 > 多数命令支持目录输入并搭配 `-t/--threads`（默认 8）并行处理，如 `fmt`、`opti-md`、`ren-md`、`ext-pre`、`rec-pre`、`mk-totrans`、`rec-trans`、`split-totrans`。
 
@@ -417,6 +418,43 @@ BookerMarkdownTool code-comment <文件或目录> [选项]
 | `-p, --prompt` | 提问模板 | 内置“请给以下代码的每一行添加注释” |
 | `-m, --model` | 模型名或模型文件路径 | `chatglm2-ggml-6b-q4_0` |
 
+### 排版与发布
+
+#### `wx-html`
+
+把 Markdown 渲染为微信公众号可直接粘贴的 HTML 文档（移植自 content-pipeline 的 `format` 子命令）：
+
+```
+BookerMarkdownTool wx-html <文件> [选项]
+```
+
+输出默认为 `<文件名>_preview.html`（与输入同目录），内容是带内联样式的完整 HTML，顶部有一行提示“全选下方内容 → 复制 → 粘贴到公众号编辑器”。
+
+| 选项 | 说明 | 默认 |
+| --- | --- | --- |
+| `--theme` | 配色主题，三选一 | `01fish` |
+| `--font-size` | 正文字号 | `medium`（15px） |
+| `-o, --output` | 输出路径 | `[input]_preview.html` |
+| `--inline` | 把 CSS 内联到每个元素的 `style`（用于微信 API 推送，需 `premailer`） | 关闭 |
+
+内置三个主题：
+
+| 主题 | 风格 |
+| --- | --- |
+| `01fish` | 暖米色背景 + 深绿标题 + 酒红强调 |
+| `chinese` | 宣纸色 + 深红标题 |
+| `apple` | 白底 + 黑字 + 蓝色链接 |
+
+示例：
+
+```
+BookerMarkdownTool wx-html article.md
+BookerMarkdownTool wx-html article.md --theme chinese --font-size large -o article.html
+BookerMarkdownTool wx-html article.md --theme apple --inline
+```
+
+> 依赖 `markdown`（可选，未安装时用内置转换器，效果略差）、`pygments`（代码高亮）、`premailer`（仅 `--inline` 需要）。
+
 ## 典型工作流
 
 以把一份在线图书整理为 ApacheCN 风格知识库为例：
@@ -457,6 +495,12 @@ BookerMarkdownTool filter-sense docs/xxx.md
 
 ```
 BookerMarkdownTool build docs -t 8
+```
+
+**6. 生成公众号 HTML**
+
+```
+BookerMarkdownTool wx-html docs/README.md --theme chinese --font-size large
 ```
 
 **批量导出 / 手工整编**：`tomd` 转单页 HTML，`split` 拆分、`merge` 合并分册。

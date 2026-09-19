@@ -5,3 +5,6 @@ pyyaml
 EpubCrawler
 imgyaso
 pyturndown
+markdown
+pygments
+premailer
