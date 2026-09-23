@@ -31,8 +31,6 @@ def merge(args):
     ]
 
     md = '\n\n'.join(mds)
-    if args.i2l:
-        md = re.sub(r'!\[.*?\]\((.+?)\)', r'<\1>', md)
     lines = split_md_lines(md)
     groups = ['']
     for c in lines:
@@ -51,6 +49,10 @@ def merge(args):
             re.sub(r'(?<=\]\()img/', args.img_pref, g)
             for g in groups
         ]
+    
+    if args.i2l:
+        for i, g in enumerate(groups):
+            groups[i] = re.sub(r'!\[.*?\]\((.+?)\)', r'<\1>', g)
 
     # 未设置标题情况下从 README 里面读取标题并设置
     credit = ''
