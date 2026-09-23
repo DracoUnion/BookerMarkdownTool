@@ -31,6 +31,8 @@ def merge(args):
     ]
 
     md = '\n\n'.join(mds)
+    if args.i2l:
+        md = re.sub(r'!\[.*?\]\((.+?)\)', r'<\1>', md)
     lines = split_md_lines(md)
     groups = ['']
     for c in lines:
@@ -74,6 +76,7 @@ def reg_subparser(subparsers):
     merge_parser.add_argument("-l", "--lines", type=int, default=1500, help="minimum of lines of each md")
     merge_parser.add_argument("-i", "--img-pref", help="img link prefix")
     merge_parser.add_argument("-r", "--recur", action='store_true', help="whether recursive")
+    merge_parser.add_argument("--i2l", action='store_true', help="img to link")
     merge_parser.set_defaults(func=merge)
     
             
