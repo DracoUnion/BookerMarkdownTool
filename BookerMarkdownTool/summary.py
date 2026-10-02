@@ -20,6 +20,7 @@ def docs_summary_handle(args):
         if path.isdir(path.join(doc_dir, d)) and
            path.isfile(path.join(doc_dir,d, 'README.md'))
     ]
+    doc_names.sort()
     toc = []
     for d in doc_names:
         readme_fname = path.join(doc_dir, d, 'README.md')
