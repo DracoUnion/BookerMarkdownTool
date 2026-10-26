@@ -11,13 +11,8 @@ from . import tomd, wx_html
 
 
 def main():
-    # Windows GBK 控制台对 ✓/中文等字符会报 UnicodeEncodeError，统一用 utf-8 输出
-    for _stream in (sys.stdout, sys.stderr):
-        if hasattr(_stream, 'reconfigure'):
-            try:
-                _stream.reconfigure(encoding='utf-8')
-            except Exception:
-                pass
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
     parser = argparse.ArgumentParser(prog="BookerMarkdownTool", description="iBooker WIKI tool", formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("-v", "--version", action="version", version=f"BookerMarkdownTool version: {__version__}")
     parser.set_defaults(func=lambda x: parser.print_help())
