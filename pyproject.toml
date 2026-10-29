@@ -50,6 +50,11 @@ dependencies = [
     "markdown",
     "pygments",
     "premailer",
+    "openai",
+    "httpx",
+    "pydantic",
+    "json_repair",
+    "ctx-compact",
 ]
 
 [project.urls]

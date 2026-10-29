@@ -9,6 +9,7 @@ import json
 import yaml
 import copy
 import traceback
+import hashlib
 from functools import reduce
 from urllib.parse import quote_plus
 from os import path
@@ -17,7 +18,9 @@ from datetime import datetime
 from collections import OrderedDict
 from multiprocessing import Pool
 from concurrent.futures import ThreadPoolExecutor
+from typing import *
 import imgyaso
+from pydantic import BaseModel, parse_obj_as, ValidationError
 
 DIR = path.dirname(path.abspath(__file__))
 
@@ -293,3 +296,145 @@ def split_md_lines(md):
     if code:
         res.append(code + '```')
     return res
+
+def md5(text: str):
+    return hashlib.md5(text.encode('utf8')).hexdigest()
+
+
+def gen_objs_md5(*args):
+    args = [
+        o if isinstance(o, str) else
+            json_dump_model(o)
+        for o in args
+    ]
+    return '_'.join(md5(o) for o in args)
+
+
+def render_prompt(prompt: str, **kw):
+    return re.sub(r"{(\w+)}", lambda g: kw.get(g.group(1), g.group(0)), prompt)
+
+
+def tok_en_zh(text):
+    return re.findall(r'[\u4e00-\u9fff]|[a-zA-Z]+', text)
+
+
+def get_ngram_set(toks, n):
+    return set(tuple(toks[i:i+n]) for i in range(len(toks)-n+1))
+
+
+def ngram_jaccard(text1: str, text2: str, n: int = 3) -> float:
+    set1 = get_ngram_set(tok_en_zh(text1.lower()), n)
+    set2 = get_ngram_set(tok_en_zh(text2.lower()), n)
+    inter = len(set1 & set2)
+    union = len(set1 | set2)
+    return inter / union if union else 0.0
+
+
+def ngram_coverage(src: str, gen: str, n: int = 3) -> float:
+    src_set = get_ngram_set(tok_en_zh(src.lower()), n)
+    gen_set = get_ngram_set(tok_en_zh(gen.lower()), n)
+    inter = len(src_set & gen_set)
+    all_ = len(gen_set)
+    return inter / all_ if all_ else 0.0
+
+
+def ext_code_block(s):
+    return re.search(r'```\w*([\s\S]+)```', s).group(1)
+
+
+def ext_cont_block(s):
+    return re.search(r'\[content\]([\s\S]+)\[/content\]', s).group(1)
+
+
+def json_dump_model(obj) -> str:
+    """将对象（含 pydantic 模型/列表）序列化为 JSON 字符串。"""
+    if isinstance(obj, BaseModel):
+        obj = obj.model_dump()
+    elif isinstance(obj, list):
+        obj = [
+            it.dict() if isinstance(it, BaseModel) else it
+            for it in obj
+        ]
+    return json.dumps(obj, ensure_ascii=False)
+
+
+def json_load_model(text: str, model: Type[BaseModel]):
+    """将 JSON 文本解析为指定 pydantic 模型。"""
+    try:
+        return parse_obj_as(model, json.loads(text))
+    except json.JSONDecodeError:
+        return None
+    except ValidationError:
+        return None
+
+
+def write_text(fname: str, text: str, append: bool = False) -> None:
+    """将 text 以 UTF-8 写入 fname（自动创建父目录）。"""
+    os.makedirs(path.dirname(fname), exist_ok=True)
+    open(fname, 'a' if append else 'w', encoding='utf8').write(text)
+
+
+def read_text(fname: str) -> str:
+    """以 UTF-8 读取 fname 的文本内容。"""
+    if not path.isfile(fname):
+        return None
+    text = open(fname, encoding='utf8').read()
+    chs = set(text)
+    # 避免读取损坏的数据
+    if len(chs) == 1 and '\x00' in chs:
+        text = ""
+    return text
+
+
+def write_yaml_model(fname: str, obj: Any) -> None:
+    """将对象（含 pydantic 模型/列表）以 YAML 形式写入 fname。"""
+    if isinstance(obj, BaseModel):
+        obj = obj.model_dump()
+    elif isinstance(obj, list):
+        obj = [
+            it.model_dump() if isinstance(it, BaseModel) else it
+            for it in obj
+        ]
+    os.makedirs(path.dirname(fname), exist_ok=True)
+    with open(fname, 'w', encoding='utf8') as f:
+        yaml.safe_dump(obj, f, allow_unicode=True, sort_keys=False)
+
+
+def read_yaml_model(fname: str, model: Optional[Type[BaseModel]]):
+    """从 fname 读取 YAML 并解析为指定 pydantic 模型；文件缺失或损坏时返回 None。"""
+    if not path.isfile(fname) or not path.getsize(fname):
+        return None
+    try:
+        data = yaml.safe_load(open(fname, encoding='utf8').read())
+        return parse_obj_as(model, data) if model else data
+    except yaml.YAMLError:
+        return None
+    except ValidationError:
+        return None
+
+
+def repl_code_block(md: str) -> Tuple[str, List[str]]:
+    blocks = []
+    def repl_func(g):
+        s = g.group()
+        tk = f'[PRE{len(blocks)}]'
+        blocks.append(s)
+        return tk
+    CODE_BLOCK_RE = r'''
+        # 代码块
+        ```[\s\S]+?```
+        |
+        # 图片
+        !\[.*?\]\(.+?\)
+        |
+        # 公式块
+        \$\$[\s\S]+?\$\$
+    '''
+    md = re.sub(CODE_BLOCK_RE, repl_func, md, flags=re.VERBOSE)
+    return md, blocks
+
+
+def rec_code_block(md: str, blocks: List[str]) -> str:
+    for i, b in enumerate(blocks):
+        md = md.replace(f'[PRE{i}]', b)
+    return md
