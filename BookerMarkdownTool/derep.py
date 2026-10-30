@@ -134,5 +134,4 @@ def reg_subparser(subparsers):
     derep_parser.add_argument("-r", "--round", type=int, default=3, help="修复轮次上限")
     derep_parser.add_argument("-th", "--threshold", type=float, default=0.4, help="重复度阈值，超过则视为重复")
     derep_parser.add_argument("-n", "--ngram", type=int, default=3, help="n-gram 窗口大小")
-    derep_parser.add_argument("-D", "--debug", action='store_true', help="调试模式")
     derep_parser.set_defaults(func=derep_handle)

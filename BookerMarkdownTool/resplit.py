@@ -99,5 +99,4 @@ def reg_subparser(subparsers):
     clean_parser.add_argument("-l", "--limit", type=int, default=3000, help="行数")
     clean_parser.add_argument("-ol", "--overlap", type=int, default=50, help="重叠行数")
     clean_parser.add_argument("-t", "--threads", type=int, default=8, help="线程数")
-    clean_parser.add_argument("-D", "--debug", action='store_true', help="调试模式")
     clean_parser.set_defaults(func=resplit_hdl)

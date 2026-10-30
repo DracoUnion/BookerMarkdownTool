@@ -488,5 +488,4 @@ def reg_subparser(subparsers):
         help="在摄取完毕后执行坏链修复",
     )
     parser.add_argument("-i", "--input-dir", help="要添加的 MD 文件或者目录")
-    parser.add_argument("-D", "--debug", action='store_true', help="调试模式")
     parser.set_defaults(func=md2wiki)

@@ -284,5 +284,4 @@ def reg_subparser(subparsers):
     fmt_chunk_parser.add_argument("-x", "--excluding-re", default='', help="排除文件的正则")
     fmt_chunk_parser.add_argument("-r", "--round", type=int, default=3, help="修复轮次")
     fmt_chunk_parser.add_argument("-mr", "--multi-round", action='store_true', help="是否多轮")
-    fmt_chunk_parser.add_argument("-D", "--debug", action='store_true', help="调试模式")
     fmt_chunk_parser.set_defaults(func=fmt_chunk_handle)
