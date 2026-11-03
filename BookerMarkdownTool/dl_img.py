@@ -19,7 +19,8 @@ def tr_download_img(url, img_fname, args):
                 retry=args.retry,
                 check_status=not args.no_check_status,
             ).content
-            _ = Image.open(BytesIO(data))
+            if not args.no_check_valid:
+                _ = Image.open(BytesIO(data))
             data = pngquant(data)
             open(img_fname, 'wb').write(data)
             return
