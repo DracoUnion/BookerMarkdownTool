@@ -13,7 +13,8 @@ def tr_download_img(url, img_fname, args):
         data = request_retry(
             'GET', url, 
             headers=hdrs,
-            retry=args.retry
+            retry=args.retry,
+            check_status=not args.no_check_status,
         ).content
         data = pngquant(data)
         open(img_fname, 'wb').write(data)
@@ -76,5 +77,6 @@ def reg_subparser(subparsers):
     dlimg_parser.add_argument("-it", "--img-threads", type=int, default=24, help="img threads")
     dlimg_parser.add_argument("-c", "--cookie", default='', help="cookie")
     dlimg_parser.add_argument("-rf", "--referer", default='', help="referer")
+    dlimg_parser.add_argument("-CS", "--no-check-status", action='store_true', help="no-check-status")
     dlimg_parser.add_argument("-r", "--retry", type=int, default=10, help="retry")
     dlimg_parser.set_defaults(func=dl_img_handle)
