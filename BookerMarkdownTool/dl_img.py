@@ -24,6 +24,8 @@ def tr_download_img(url, img_fname, args):
             data = pngquant(data)
             open(img_fname, 'wb').write(data)
             return
+        except KeyboardInterrupt:
+            raise
         except:
             traceback.print_exc()
 
