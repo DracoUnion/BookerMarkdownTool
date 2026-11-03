@@ -2,9 +2,17 @@ from .util import *
 import re
 import hashlib
 
-def tr_download_img(url, img_fname, retry=10):
+def tr_download_img(url, img_fname, args):
     print(f'{url} => {img_fname}')
-    data = request_retry('GET', url, retry=retry).content
+    hdrs = {
+        'Cookie': args.cookie,
+        'Referer': args.referer,
+    }
+    data = request_retry(
+        'GET', url, 
+        headers=hdrs,
+        retry=args.retry
+    ).content
     open(img_fname, 'wb').write(data)
 
 def dl_img_handle(args):
@@ -42,7 +50,7 @@ def dl_img_file(args):
             hash_ = hashlib.md5(url.encode('utf8')).hexdigest()
             img_fname = path.join(
                 path.dirname(fname), 'img',  f'{hash_}.png')
-            h = pool.submit(tr_download_img, url, img_fname, args.retry)
+            h = pool.submit(tr_download_img, url, img_fname, args)
             hdls.append(h)
             md = md.replace(url, f'img/{hash_}.png')
         except KeyboardInterrupt:
@@ -61,5 +69,7 @@ def reg_subparser(subparsers):
     dlimg_parser.add_argument("fname", help="md or txt file name")
     dlimg_parser.add_argument("-ft", "--file-threads", type=int, default=1, help="file threads")
     dlimg_parser.add_argument("-it", "--img-threads", type=int, default=24, help="img threads")
+    dlimg_parser.add_argument("-c", "--cookie", default='', help="cookie")
+    dlimg_parser.add_argument("-rf", "--referer", default='', help="referer")
     dlimg_parser.add_argument("-r", "--retry", type=int, default=10, help="retry")
     dlimg_parser.set_defaults(func=dl_img_handle)
