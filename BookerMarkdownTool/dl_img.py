@@ -5,28 +5,42 @@ import re
 import hashlib
 from imgyaso import pngquant
 
+def img_valid(data):
+    try:
+        _ = Image.open(BytesIO(data))
+        return True
+    except:
+        return False
+
 def tr_download_img(url, img_fname, args):
+    if path.isfile(img_fname) and \
+       img_valid(open(img_fname, 'rb').read()):
+        print(f'{img_fname} 已存在')
+        return
+    print(f'{url} => {img_fname}')
+    hdrs = {
+        'Cookie': args.cookie,
+        'Referer': args.referer,
+    }
     for i in range(args.retry):
         try:
-            print(f'{url} => {img_fname}')
-            hdrs = {
-                'Cookie': args.cookie,
-                'Referer': args.referer,
-            }
             data = request_retry(
                 'GET', url, 
                 headers=hdrs,
                 retry=args.retry,
                 check_status=not args.no_check_status,
             ).content
-            if not args.no_check_valid:
-                _ = Image.open(BytesIO(data))
+            if not args.no_check_valid and \
+               not img_valid(data):
+                raise ValueError(f'{url} 图像下载失败')
             data = pngquant(data)
             open(img_fname, 'wb').write(data)
+            print(f'{url} 下载成功')
             return
         except KeyboardInterrupt:
             raise
         except:
+            print(f'{url} retry {i+1}')
             traceback.print_exc()
 
 def dl_img_handle(args):
