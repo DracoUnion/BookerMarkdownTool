@@ -3,17 +3,20 @@ import re
 import hashlib
 
 def tr_download_img(url, img_fname, args):
-    print(f'{url} => {img_fname}')
-    hdrs = {
-        'Cookie': args.cookie,
-        'Referer': args.referer,
-    }
-    data = request_retry(
-        'GET', url, 
-        headers=hdrs,
-        retry=args.retry
-    ).content
-    open(img_fname, 'wb').write(data)
+    try:
+        print(f'{url} => {img_fname}')
+        hdrs = {
+            'Cookie': args.cookie,
+            'Referer': args.referer,
+        }
+        data = request_retry(
+            'GET', url, 
+            headers=hdrs,
+            retry=args.retry
+        ).content
+        open(img_fname, 'wb').write(data)
+    except:
+        traceback.print_exc()
 
 def dl_img_handle(args):
     fnames = [args.fname] if path.isfile(args.fname) \
