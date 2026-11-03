@@ -1,25 +1,30 @@
+from PIL import Image
+from io import BytesIO
 from .util import *
 import re
 import hashlib
 from imgyaso import pngquant
 
 def tr_download_img(url, img_fname, args):
-    try:
-        print(f'{url} => {img_fname}')
-        hdrs = {
-            'Cookie': args.cookie,
-            'Referer': args.referer,
-        }
-        data = request_retry(
-            'GET', url, 
-            headers=hdrs,
-            retry=args.retry,
-            check_status=not args.no_check_status,
-        ).content
-        data = pngquant(data)
-        open(img_fname, 'wb').write(data)
-    except:
-        traceback.print_exc()
+    for i in range(args.retry):
+        try:
+            print(f'{url} => {img_fname}')
+            hdrs = {
+                'Cookie': args.cookie,
+                'Referer': args.referer,
+            }
+            data = request_retry(
+                'GET', url, 
+                headers=hdrs,
+                retry=args.retry,
+                check_status=not args.no_check_status,
+            ).content
+            _ = Image.open(BytesIO(data))
+            data = pngquant(data)
+            open(img_fname, 'wb').write(data)
+            return
+        except:
+            traceback.print_exc()
 
 def dl_img_handle(args):
     fnames = [args.fname] if path.isfile(args.fname) \
@@ -78,5 +83,6 @@ def reg_subparser(subparsers):
     dlimg_parser.add_argument("-c", "--cookie", default='', help="cookie")
     dlimg_parser.add_argument("-rf", "--referer", default='', help="referer")
     dlimg_parser.add_argument("-CS", "--no-check-status", action='store_true', help="no-check-status")
+    dlimg_parser.add_argument("-CV", "--no-check-valid", action='store_true', help="no-check-valid")
     dlimg_parser.add_argument("-r", "--retry", type=int, default=10, help="retry")
     dlimg_parser.set_defaults(func=dl_img_handle)
