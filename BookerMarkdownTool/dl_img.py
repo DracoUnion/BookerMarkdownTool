@@ -1,6 +1,7 @@
 from .util import *
 import re
 import hashlib
+from imgyaso import pngquant
 
 def tr_download_img(url, img_fname, args):
     try:
@@ -14,6 +15,7 @@ def tr_download_img(url, img_fname, args):
             headers=hdrs,
             retry=args.retry
         ).content
+        data = pngquant(data)
         open(img_fname, 'wb').write(data)
     except:
         traceback.print_exc()
