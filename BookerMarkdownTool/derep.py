@@ -68,11 +68,11 @@ class DerepOrchestrator:
         res = [h.result() for h in hdls]
         md_copy = '\n\n'.join(res)
         # 检查标题
-        RE_TOP_TITLE = r'\A#+\x20+.+'
-        m = re.search(RE_TOP_TITLE, md)
+        RE_TOP_TITLE = r'\A\s*^#+\x20+.+'
+        m = re.search(RE_TOP_TITLE, md, flags=re.M)
         # 如果检查标题且原文有标题且副本没有标题，就加上
         if not self.args.no_check_title and \
-           m and not re.search(RE_TOP_TITLE, md_copy):
+           m and not re.search(RE_TOP_TITLE, md_copy, flags=re.M):
             md_copy = m.group() + '\n\n' + md_copy
         write_text(ofname, md_copy)
         logger.info(f'[*] {ofname} 已写入')
