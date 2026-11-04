@@ -1,3 +1,4 @@
+import time
 from PIL import Image
 from io import BytesIO
 from .util import *
@@ -36,12 +37,14 @@ def tr_download_img(url, img_fname, args):
             data = pngquant(data)
             open(img_fname, 'wb').write(data)
             print(f'{url} 下载成功')
+            time.sleep(args.wait)
             return
         except KeyboardInterrupt:
             raise
         except:
             print(f'{url} retry {i+1}')
             traceback.print_exc()
+            time.sleep(args.wait)
 
 def dl_img_handle(args):
     fnames = [args.fname] if path.isfile(args.fname) \
@@ -102,4 +105,5 @@ def reg_subparser(subparsers):
     dlimg_parser.add_argument("-CS", "--no-check-status", action='store_true', help="no-check-status")
     dlimg_parser.add_argument("-CV", "--no-check-valid", action='store_true', help="no-check-valid")
     dlimg_parser.add_argument("-r", "--retry", type=int, default=10, help="retry")
+    dlimg_parser.add_argument("-w", "--wait", type=int, default=0, help="wait sec")
     dlimg_parser.set_defaults(func=dl_img_handle)
