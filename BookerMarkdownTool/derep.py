@@ -66,7 +66,15 @@ class DerepOrchestrator:
         pool = ThreadPoolExecutor(self.args.chunk_threads)
         hdls = [pool.submit(self.step_derep_chunk, c) for c in chunks]
         res = [h.result() for h in hdls]
-        write_text(ofname, '\n\n'.join(res))
+        md_copy = '\n\n'.join(res)
+        # 检查标题
+        RE_TOP_TITLE = r'\A#+\x20+.+'
+        m = re.search(RE_TOP_TITLE, md)
+        # 如果检查标题且原文有标题且副本没有标题，就加上
+        if not self.args.no_check_title and \
+           m and not re.search(RE_TOP_TITLE, md_copy):
+            md_copy = m.group() + '\n\n' + md_copy
+        write_text(ofname, md_copy)
         logger.info(f'[*] {ofname} 已写入')
 
     def run(self):
@@ -134,4 +142,5 @@ def reg_subparser(subparsers):
     derep_parser.add_argument("-r", "--round", type=int, default=3, help="修复轮次上限")
     derep_parser.add_argument("-th", "--threshold", type=float, default=0.4, help="重复度阈值，超过则视为重复")
     derep_parser.add_argument("-n", "--ngram", type=int, default=3, help="n-gram 窗口大小")
+    derep_parser.add_argument("-CT", "--no-check-title", action='store_true', help="不检查标题是否存在")
     derep_parser.set_defaults(func=derep_handle)
