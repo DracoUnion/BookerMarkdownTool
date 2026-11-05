@@ -34,7 +34,7 @@ def merge(args):
     lines = split_md_lines(md)
     groups = ['']
     for c in lines:
-        if len(groups[-1]) < args.limit:
+        if len(groups[-1]) + len(c) + 2 < args.limit:
             groups[-1] += '\n\n' + c
         else:
             groups.append(c)
