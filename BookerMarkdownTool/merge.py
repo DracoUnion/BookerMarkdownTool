@@ -34,7 +34,7 @@ def merge(args):
     lines = split_md_lines(md)
     groups = ['']
     for c in lines:
-        if groups[-1].count('\n') < args.lines:
+        if len(groups[-1]) < args.limit:
             groups[-1] += '\n\n' + c
         else:
             groups.append(c)
@@ -75,7 +75,7 @@ def reg_subparser(subparsers):
     merge_parser = subparsers.add_parser("merge", help="merge mds")
     merge_parser.add_argument("dir", help="dir name")
     merge_parser.add_argument("-t", "--title", default='', help="title")
-    merge_parser.add_argument("-l", "--lines", type=int, default=1500, help="minimum of lines of each md")
+    merge_parser.add_argument("-l", "--limit", type=int, default=200_000, help="minimum of chars of each md")
     merge_parser.add_argument("-i", "--img-pref", help="img link prefix")
     merge_parser.add_argument("-r", "--recur", action='store_true', help="whether recursive")
     merge_parser.add_argument("--i2l", action='store_true', help="img to link")
