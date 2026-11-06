@@ -4,7 +4,7 @@ import logging
 from os import path
 from concurrent.futures import ThreadPoolExecutor
 
-from .util import extname, read_text, write_text, group_chunks, split_md_lines, repl_code_block, rec_code_block
+from .util import extname, read_text, write_text, group_chunks, split_md_lines, repl_code_block, rec_code_block, rm_ad
 from .openai import logger as oai_logger
 from .derep_agent import DerepAgent
 
@@ -74,6 +74,8 @@ class DerepOrchestrator:
         if not self.args.no_check_title and \
            m and not re.search(RE_TOP_TITLE, md_copy, flags=re.M):
             md_copy = m.group(1) + '\n\n' + md_copy
+        if self.args.remove_ad:
+            md_copy = rm_ad(md_copy)
         write_text(ofname, md_copy)
         logger.info(f'[*] {ofname} 已写入')
 
@@ -143,4 +145,5 @@ def reg_subparser(subparsers):
     derep_parser.add_argument("-th", "--threshold", type=float, default=0.4, help="重复度阈值，超过则视为重复")
     derep_parser.add_argument("-n", "--ngram", type=int, default=3, help="n-gram 窗口大小")
     derep_parser.add_argument("-CT", "--no-check-title", action='store_true', help="不检查标题是否存在")
+    derep_parser.add_argument("-AD", "--remove-ad", action='store_true', help="过滤广告")
     derep_parser.set_defaults(func=derep_handle)
