@@ -6,7 +6,7 @@ import os
 import logging
 from os import path
 from .md2skill_chunker import chunk_markdown
-from .util import group_chunks, split_md_lines, ext_cont_block, render_prompt, gen_objs_md5, read_text, write_text
+from .util import group_chunks, split_md_lines, ext_cont_block, render_prompt, gen_objs_md5, read_text, write_text, rm_ad
 from .openai import logger as oai_logger
 from .openai import OpenAIClient
 
@@ -271,8 +271,10 @@ def fmt_chunk_file(args):
     for h in hdls: h.result()
     hdls = []
 
-
-    open(ofname, 'w', encoding='utf8').write('\n\n'.join(res))
+    res_text = '\n\n'.join(res)
+    if args.remove_ad:
+        res_text = rm_ad(res_text)
+    open(ofname, 'w', encoding='utf8').write(res_text)
 
 
 def reg_subparser(subparsers):
@@ -284,4 +286,5 @@ def reg_subparser(subparsers):
     fmt_chunk_parser.add_argument("-x", "--excluding-re", default='', help="排除文件的正则")
     fmt_chunk_parser.add_argument("-r", "--round", type=int, default=3, help="修复轮次")
     fmt_chunk_parser.add_argument("-mr", "--multi-round", action='store_true', help="是否多轮")
+    fmt_chunk_parser.add_argument("-AD", "--remove-ad", action='store_true', help="过滤广告")
     fmt_chunk_parser.set_defaults(func=fmt_chunk_handle)
