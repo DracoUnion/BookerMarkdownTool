@@ -452,3 +452,17 @@ def request_retry(method, url, retry=10, check_status=False, **kw):
         except Exception as e:
             print(f'{url} retry {i}')
             if i == retry - 1: raise e
+
+def rm_ad(text):
+    text, blocks = repl_code_block(text)
+    text = text.replace('小红书', '📕')
+    text = text.replace('微博', '🧣')
+    text = text.replace('微信', '🛰️')
+    text = text.replace('公众号', '👸号')
+    text = text.replace('QQ', '🐧')
+    text = text.replace('生财有术', '龙哥盟')
+    text = text.replace('生财', '赚钱')
+    text = text.replace('亦仁', '龙哥')
+    text = re.sub(r'翻墙|梯子|科学上网|魔法上网', '🪜', text)
+    return rec_code_block(text, blocks)
+    
