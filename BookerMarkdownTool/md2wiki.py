@@ -40,7 +40,8 @@ _IMAGE_EMBED_RE = re.compile(r"!\[\[([^\]|#]+)\]\]")
 # "## 3. 标题" / "### 3.1 标题" —— Hugo 主题自行给标题编号
 _HEADING_NUM_RE = re.compile(r"^(#{2,6} )\d+(?:\.\d+)*[.、]?\s+", re.MULTILINE)
 
-# 固定分类，索引按此分节；不在列表内的归入 uncategorized。
+# 默认分类，索引按此分节；不在列表内的归入 uncategorized。
+# 可通过 CLI `--categories "a,b,c"` 覆盖。
 CATEGORIES = [
     "agent-engineering",
     "ai-security",
@@ -92,9 +93,25 @@ def _index_line(stem: str, meta: dict) -> str:
     return f"- [[{stem}]]{tags} — {meta.get('description', '')}"
 
 
-def _category_of(meta: dict) -> str:
-    cat = meta.get("category", "")
-    return cat if cat in CATEGORIES else "uncategorized"
+def _normalize_categories(raw) -> List[str]:
+    """把 CLI/环境变量传入的分类配置规范化为去重列表。
+
+    为空时回退到 CATEGORIES；含路径分隔符或 Windows 文件名非法字符的
+    分类名直接报错，避免写入 index/<category>.md 时逃逸目录。
+    """
+    if not raw:
+        return list(CATEGORIES)
+    if isinstance(raw, str):
+        raw = re.split(r"[,，;；\s]+", raw)
+    out = []
+    for c in raw:
+        c = str(c).strip()
+        if not c or c == "uncategorized" or c in out:
+            continue
+        if any(ch in c for ch in '\\/:*?"<>|'):
+            raise SystemExit(f"非法分类名（含路径/文件名字符）: {c!r}")
+        out.append(c)
+    return out or list(CATEGORIES)
 
 
 class Md2WikiOrchestrator:
@@ -103,6 +120,7 @@ class Md2WikiOrchestrator:
     def __init__(self, args):
         self.args = args
         self.agent = Md2WikiAgent(args)
+        self.categories = _normalize_categories(getattr(args, "categories", None))
         self.wiki_dir = Path(self.args.wiki_dir)
         self.wiki_dir.mkdir(parents=True, exist_ok=True)
         self.src_dir = self.wiki_dir / "sources"
@@ -111,6 +129,10 @@ class Md2WikiOrchestrator:
         self.pages_dir.mkdir(parents=True, exist_ok=True)
         self.max_chars = args.max_chars
         self.limit = args.limit
+
+    def _category_of(self, meta: dict) -> str:
+        cat = meta.get("category", "")
+        return cat if cat in self.categories else "uncategorized"
 
     # ── 步骤 0：发现待编译源 ────────────────────────────────
 
@@ -147,7 +169,7 @@ class Md2WikiOrchestrator:
         )
         plan = self.agent.plan_pages(
             index=index_text,
-            categories=", ".join(CATEGORIES),
+            categories=", ".join(self.categories),
             title=meta.get("title", ""),
             source=meta.get("source", ""),
             url=meta.get("url", ""),
@@ -171,7 +193,7 @@ class Md2WikiOrchestrator:
         lines = [
             _index_line(stem, meta)
             for stem, meta in _page_entries(self.wiki_dir)
-            if _category_of(meta) == category
+            if self._category_of(meta) == category
         ]
         return "\n".join(lines) if lines else "(该分类暂无页面)"
 
@@ -184,7 +206,7 @@ class Md2WikiOrchestrator:
         existing = (
             page_path.read_text(encoding='utf8') if page_path.exists() else "(新页面,尚无内容)"
         )
-        category = item.category or _category_of(_parse_front(existing)[0])
+        category = item.category or self._category_of(_parse_front(existing)[0])
 
         page = self.agent.write_page(
             file=item.file,
@@ -203,7 +225,7 @@ class Md2WikiOrchestrator:
         page_body = _HEADING_NUM_RE.sub(r"\1", page_body)
         if "description" not in page_meta:
             page_meta["description"] = item.focus[:80]
-        if item.category and page_meta.get("category") not in CATEGORIES:
+        if item.category and page_meta.get("category") not in self.categories:
             page_meta["category"] = item.category
         if item.tags and not page_meta.get("tags"):
             page_meta["tags"] = item.tags
@@ -279,8 +301,8 @@ class Md2WikiOrchestrator:
         out_dir = self.wiki_dir / INDEX_DIR
         out_dir.mkdir(parents=True, exist_ok=True)
         written = set()
-        for cat in CATEGORIES + ["uncategorized"]:
-            group = [(s, m) for s, m in entries if _category_of(m) == cat]
+        for cat in self.categories + ["uncategorized"]:
+            group = [(s, m) for s, m in entries if self._category_of(m) == cat]
             if not group:
                 continue
             tags = sorted({str(t) for _, m in group for t in m.get("tags") or []})
@@ -300,8 +322,8 @@ class Md2WikiOrchestrator:
     def step_rebuild_index(self) -> None:
         entries = _page_entries(self.wiki_dir)
         lines = ["# Index", ""]
-        for cat in CATEGORIES + ["uncategorized"]:
-            group = [(s, m) for s, m in entries if _category_of(m) == cat]
+        for cat in self.categories + ["uncategorized"]:
+            group = [(s, m) for s, m in entries if self._category_of(m) == cat]
             if not group:
                 continue
             lines += [f"## {cat}", ""]
@@ -488,4 +510,8 @@ def reg_subparser(subparsers):
         help="在摄取完毕后执行坏链修复",
     )
     parser.add_argument("-i", "--input-dir", help="要添加的 MD 文件或者目录")
+    parser.add_argument(
+        "--categories", default=os.environ.get("WIKI_CATEGORIES"),
+        help="逗号分隔的分类列表；缺省使用内置 5 类（也可用环境变量 WIKI_CATEGORIES）",
+    )
     parser.set_defaults(func=md2wiki)
