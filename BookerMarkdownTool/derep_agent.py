@@ -28,9 +28,9 @@ class DerepAgent:
         self.model = args.model
         self.args = args
         self.pj_dir = (
-            path.dirname(args.fname) + '_derep'
+            path.dirname(args.fname)
             if path.isfile(args.fname) else
-            path.abspath(args.fname) + '_derep'
+            path.abspath(args.fname)
         )
         self.asset_dir = path.join(self.pj_dir, 'asset')
         os.makedirs(self.pj_dir, exist_ok=True)
