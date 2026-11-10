@@ -51,7 +51,15 @@ def docs_summary_handle(args):
 def summary_handle(args):
     # 读入文件列表
     dir = args.dir
-    fnames = [f for f in os.listdir(dir) if f.endswith('.md')]
+    fnames = [
+        f for f in os.listdir(dir) 
+        if f.endswith('.md')
+    ] if not args.recur else [
+        path.join(rt, f) 
+        for rt, _, fnames in os.walk(dir)
+        for f in fnames
+        if f.endswith('.md')
+    ]
     fnames.sort()
     if 'README.md' in fnames:
         idx = fnames.index('README.md')
@@ -136,6 +144,7 @@ def reg_subparser(subparsers):
 
     summary_parser = subparsers.add_parser("summary", help="generate summary")
     summary_parser.add_argument("dir", help="dir")
+    summary_parser.add_argument("-rc", "--recur", action='store_true', help="whether recursive")
     summary_parser.set_defaults(func=summary_handle)
 
     docs_summary_parser = subparsers.add_parser("docs-summary", help="generate docs summary")

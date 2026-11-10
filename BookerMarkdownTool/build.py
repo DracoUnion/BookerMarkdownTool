@@ -64,6 +64,7 @@ def tr_articles(fname, art, imgs):
             path.dirname(fname),
             imgs,
     )
+    print(f'file: {fname}, title: {art["title"]}')
 
 
 def build(args):
