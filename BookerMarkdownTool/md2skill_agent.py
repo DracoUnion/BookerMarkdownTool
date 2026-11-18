@@ -54,14 +54,15 @@ def parse_raw_skill(raw_skill: str) -> Optional[RawSkill]:
     body = m.group(2)
 
     # 补全缺失字段
-    if 'name' not in meta:
+    name = meta.get('name')
+    if not name:
         first_line = body.split("\n")[0].strip("# ").strip()
-        meta["name"] = re.sub(
+        name = re.sub(
             r"[^a-zA-Z0-9一-鿿]+", "-", first_line
         ).strip("-").lower()[:50]
 
-    slug = _to_kebab(meta['name'])
-    trigger = meta.pop('trigger', "通用知识查询")
+    slug = _to_kebab(name)
+    trigger = meta.pop('trigger', "通用知识查询") or "通用知识查询"
 
     prerequisites = meta.get('prerequisites', [])
     if not isinstance(prerequisites, list):
@@ -69,18 +70,18 @@ def parse_raw_skill(raw_skill: str) -> Optional[RawSkill]:
     prerequisites = [p for p in prerequisites if p is not None]
 
     return RawSkill(
-        name=meta['name'],
+        name=name,
         slug=slug,
         trigger=trigger,
-        domain=meta.get('domain', ''),
+        domain=meta.get('domain') or '',
         body=body,
         raw_text=raw_skill,
         prerequisites=prerequisites,
-        source_ref=meta.get('source_ref', ''),
-        confidence=meta.get('confidence', 0.0),
-        characters=meta.get('characters', []),
-        timeline=meta.get('timeline', ''),
-        prompt_version=meta.get('prompt_version', ''),
+        source_ref=meta.get('source_ref') or '',
+        confidence=meta.get('confidence') or 0.0,
+        characters=meta.get('characters') or [],
+        timeline=meta.get('timeline') or '',
+        prompt_version=meta.get('prompt_version') or '',
     )
 
 
