@@ -486,4 +486,5 @@ def reg_subparser(subparsers):
     md2skill_parser = subparsers.add_parser("skill", help="将 Markdown 转换为技能定义")
     md2skill_parser.add_argument("fname", help="文件名")
     md2skill_parser.add_argument("-t", "--threads", type=int, default=8, help="线程数")
+    md2skill_parser.add_argument("--retry", type=int, default=3, help="覆盖率重试次数，默认 3")
     md2skill_parser.set_defaults(func=md2skill)
