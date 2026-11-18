@@ -13,3 +13,6 @@ httpx
 pydantic
 json_repair
 ctx-compact
+jieba
+numpy
+sentence-transformers

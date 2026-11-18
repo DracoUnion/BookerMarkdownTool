@@ -11,6 +11,7 @@ from . import flatten, fmt, merge, misc, opti, ren, sense, split, summary
 from . import tomd, wx_html
 from . import clean_heading, erchuang, md2kg, md2skill, fmt_chunk
 from . import md2wiki, resplit, trans_chunk, derep
+from . import kb_index, kb_query
 
 
 def main():
@@ -66,6 +67,8 @@ def main():
     resplit.reg_subparser(subparsers)
     trans_chunk.reg_subparser(subparsers)
     derep.reg_subparser(subparsers)
+    kb_index.reg_subparser(subparsers)
+    kb_query.reg_subparser(subparsers)
 
     args = parser.parse_args()
     args.func(args)
