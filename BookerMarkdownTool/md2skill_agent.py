@@ -130,7 +130,7 @@ class Md2SkillAgent:
         """Step 1: 从目录和前言推断知识结构 schema"""
         prompt = render_prompt(SCHEMA_PMT, toc=toc, preface=preface)
         parse_output = lambda s: BookSchema.model_validate(
-            json.loads(ext_code_block(s)))
+            json.loads(ext_code_block(s) or s))
         schema_raw = self.llm.ask_chatgpt_retry(prompt, self.model, self.args, parse_output)
         return schema_raw
 
@@ -143,7 +143,7 @@ class Md2SkillAgent:
             content=content,
             context=context,
         )
-        parse_output = lambda s: ext_cont_block(s).split('[split/]')
+        parse_output = lambda s: (ext_cont_block(s) or s).split('[split/]')
         raw_texts = self.llm.ask_chatgpt_retry(prompt, self.model, self.args, parse_output)
         return [rs for rs in (parse_raw_skill(rt) for rt in raw_texts) if rs]
 
@@ -155,7 +155,7 @@ class Md2SkillAgent:
             count=str(len(cluster)),
             skills=text,
         )
-        merged_text = self.llm.ask_chatgpt_retry(prompt, self.model, self.args, ext_cont_block)
+        merged_text = self.llm.ask_chatgpt_retry(prompt, self.model, self.args, lambda s: ext_cont_block(s) or s)
         return parse_raw_skill(merged_text)
 
     def regen_raw_skill(
@@ -172,6 +172,6 @@ class Md2SkillAgent:
             coverage=f"{coverage:.2f}",
         )
         new_text = self.llm.ask_chatgpt_retry(
-            prompt, self.model, self.args, ext_cont_block
+            prompt, self.model, self.args, lambda s: ext_cont_block(s) or s
         )
         return parse_raw_skill(new_text)
