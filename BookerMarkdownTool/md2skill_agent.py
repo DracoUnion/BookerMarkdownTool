@@ -172,6 +172,6 @@ class Md2SkillAgent:
             coverage=f"{coverage:.2f}",
         )
         new_text = self.llm.ask_chatgpt_retry(
-            prompt, self.model, self.args,
+            prompt, self.model, self.args, ext_cont_block
         )
         return parse_raw_skill(new_text)

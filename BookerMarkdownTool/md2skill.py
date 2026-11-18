@@ -350,28 +350,38 @@ class Md2SkillOrchestrator:
         # 则把分块、技能内容和多出来的三元组交给智能体再次生成
         max_retry = getattr(self.args, 'retry', 3)
         for i, rs in enumerate(cs.raw_skills):
+            cov = ngram_coverage(cs.content, rs.body)
+            if cov >= 0.4:
+                print(f'[2] 原始技能 {rs.name} 符合要求，覆盖率 {cov:.2f}')
+                continue
             for atm in range(max_retry):
-                print(f'[2] 检查原始技能 {rs.name}')
-                cov = ngram_coverage(cs.content, rs.body)
-                if cov >= 0.4: 
-                    print(f'[2] 原始技能 {rs.name} 符合要求，覆盖率 {cov}')
-                    break
                 src_set = get_ngram_set(tok_en_zh(cs.content.lower()), 3)
                 gen_set = get_ngram_set(tok_en_zh(rs.body.lower()), 3)
-                unk = sorted(gen_set - src_set & gen_set)
+                unk = sorted(gen_set - src_set)
                 unk_str = '\n'.join(' '.join(g) for g in unk) if unk else '(无)'
                 print(
-                    f'[2] 原始技能 {rs.name} 不符合要求，覆盖率 {cov}' + 
+                    f'[2] 原始技能 {rs.name} 不符合要求，覆盖率 {cov:.2f}' +
                     f'，以下三元组未出现在原文中：{unk_str}'
                 )
 
-                rs = self.agent.regen_raw_skill(
+                new_rs = self.agent.regen_raw_skill(
                     context=cs.context,
                     content=cs.content,
                     raw_text=rs.raw_text,
                     unknown=unk_str,
                     coverage=cov,
                 )
+                if new_rs is None:
+                    continue
+                new_cov = ngram_coverage(cs.content, new_rs.body)
+                if new_cov >= 0.4:
+                    cs.raw_skills[i] = new_rs
+                    print(f'[2] 原始技能 {new_rs.name} 重试成功，覆盖率 {new_cov:.2f}')
+                    break
+                rs = new_rs
+                cov = new_cov
+            else:
+                print(f'[2] 原始技能 {rs.name} 重试 {max_retry} 次后仍不符合要求')
 
         cs.generated = True
         for rs in cs.raw_skills:
