@@ -1,15 +1,16 @@
 SCHEMA_PMT = '''
-是一个严苛的知识架构师。你的任务是分析一本书的目录和前言，推断该书的知识结构。
+你是一个严苛的知识架构师。你的任务是分析一本书的目录和前言，推断该书的知识结构。
 
 ## 规则
 
 1. domains 使用 kebab-case 英文命名
 2. 仅基于目录和前言内容推断，禁止编造
 3. 直接输出 JSON，禁止输出任何解释性文字
+4. 整个输出必须用 ```json 代码块包裹，禁止输出代码块之外的任何文字
 
 ## 格式
 
-你必须输出一个 JSON 对象，包含以下字段：
+你必须输出一个 JSON 对象，包含以下字段，并整体用 ```json 包裹：
 
 ```json
 {
@@ -71,7 +72,7 @@ TECH_EXT_PMT = '''
 
 ## 格式
 
-你必须严格按以下 YAML Frontmatter 格式输出每个 Skill：
+你必须严格按以下 YAML Frontmatter 格式输出每个 Skill，并且每个 Skill 整体必须用 [content]...[/content] 包裹，禁止输出包裹标签之外的任何文字：
 
 [content]
 ---
@@ -139,7 +140,7 @@ NARRATIVE_EXT_PMT = '''
 
 ## 格式
 
-每个单元输出为如下 YAML Frontmatter + Markdown Body 格式：
+每个单元输出为如下 YAML Frontmatter + Markdown Body 格式，并且每个单元整体必须用 [content]...[/content] 包裹，禁止输出包裹标签之外的任何文字：
 
 [content]
 ---
@@ -219,6 +220,8 @@ METHOD_EXT_PMT = '''
 
 ## 格式
 
+每个 Skill 必须用 [content]...[/content] 包裹，禁止输出包裹标签之外的任何文字：
+
 [content]
 ---
 name: <kebab-case 英文名称，全局唯一>
@@ -285,6 +288,8 @@ ACADEMIC_EXT_PMT = '''
 
 ## 格式
 
+每个 Skill 必须用 [content]...[/content] 包裹，禁止输出包裹标签之外的任何文字：
+
 [content]
 ---
 name: <kebab-case 英文名称，全局唯一>
@@ -344,6 +349,8 @@ INSURANCE_EXT_PMT = '''
 
 ## 格式
 
+每个 Skill 必须用 [content]...[/content] 包裹，禁止输出包裹标签之外的任何文字：
+
 [content]
 ---
 name: <kebab-case 英文名称，全局唯一>
@@ -402,6 +409,8 @@ REPORT_EXT_PMT = '''
 
 ## 格式
 
+每个 Skill 必须用 [content]...[/content] 包裹，禁止输出包裹标签之外的任何文字：
+
 [content]
 ---
 name: <kebab-case 英文名称，全局唯一>
@@ -459,6 +468,8 @@ MED_LGL_EXT_PMT = '''
 [/content]
 
 ## 格式
+
+每个 Skill 必须用 [content]...[/content] 包裹，禁止输出包裹标签之外的任何文字：
 
 [content]
 ---
@@ -527,6 +538,8 @@ PROC_EXT_PMT = '''
 
 ## 格式
 
+每个 Skill 必须用 [content]...[/content] 包裹，禁止输出包裹标签之外的任何文字：
+
 [content]
 ---
 name: <kebab-case 英文名称，全局唯一>
@@ -568,6 +581,7 @@ REDUCE_PMT = """
 4. 如果发现缺陷，在输出末尾用 [CRITIC] 标注具体问题
 
 输出格式严格使用 YAML Frontmatter + Markdown Body，与输入格式完全一致。
+合并后的 Skill 整体必须用 [content]...[/content] 包裹，禁止输出包裹标签之外的任何文字。
 直接输出合并后的 Skill，禁止输出分析过程。
 
 以下是 {count} 个相似的 Skill，由 [split/] 分隔，需要合并为一个最终版本：
@@ -579,17 +593,6 @@ REDUCE_PMT = """
 请合并以上 Skill，消除重复，补充遗漏，输出一个完整的最终 Skill。
 
 """
-
-TYPE_PMT_MAP = {
-    '技术手册': TECH_EXT_PMT,
-    '叙事类': NARRATIVE_EXT_PMT,
-    '方法论': METHOD_EXT_PMT,
-    '学术教材': ACADEMIC_EXT_PMT,
-    '保险合同': INSURANCE_EXT_PMT,
-    '行业报告': REPORT_EXT_PMT,
-    '医学法律': MED_LGL_EXT_PMT,
-    '流程规范': PROC_EXT_PMT,
-}
 
 ############################################################
 
@@ -626,7 +629,8 @@ RAW_SKILL_REGEN_PMT = """
 2. 严格基于原文内容，禁止编造原文中未出现的信息
 3. 必须排除上述"未在原文出现的三元组"中涉及的关键信息
 4. 如果原文中没有可提取的内容，输出 [empty/]
-5. 直接输出最终数据结构，禁止输出分析过程
+5. 重新生成的 Skill 整体必须用 [content]...[/content] 包裹，禁止输出包裹标签之外的任何文字
+6. 直接输出最终数据结构，禁止输出分析过程
 """
 
 ############################################################
@@ -650,4 +654,15 @@ DOMAIN_SYNONYMS = {
     # 金融领域
     "金融": "金融", "finance": "金融", "财务": "金融",
     "投资": "金融·投资", "investment": "金融·投资",
+}
+
+TYPE_PMT_MAP = {
+    '技术手册': TECH_EXT_PMT,
+    '叙事类': NARRATIVE_EXT_PMT,
+    '方法论': METHOD_EXT_PMT,
+    '学术教材': ACADEMIC_EXT_PMT,
+    '保险合同': INSURANCE_EXT_PMT,
+    '行业报告': REPORT_EXT_PMT,
+    '医学法律': MED_LGL_EXT_PMT,
+    '流程规范': PROC_EXT_PMT,
 }

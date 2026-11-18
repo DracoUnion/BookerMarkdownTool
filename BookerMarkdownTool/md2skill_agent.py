@@ -63,6 +63,11 @@ def parse_raw_skill(raw_skill: str) -> Optional[RawSkill]:
     slug = _to_kebab(meta['name'])
     trigger = meta.pop('trigger', "通用知识查询")
 
+    prerequisites = meta.get('prerequisites', [])
+    if not isinstance(prerequisites, list):
+        prerequisites = []
+    prerequisites = [p for p in prerequisites if p is not None]
+
     return RawSkill(
         name=meta['name'],
         slug=slug,
@@ -70,7 +75,7 @@ def parse_raw_skill(raw_skill: str) -> Optional[RawSkill]:
         domain=meta.get('domain', ''),
         body=body,
         raw_text=raw_skill,
-        prerequisites=meta.get('prerequisites', []),
+        prerequisites=prerequisites,
         source_ref=meta.get('source_ref', ''),
         confidence=meta.get('confidence', 0.0),
         characters=meta.get('characters', []),
