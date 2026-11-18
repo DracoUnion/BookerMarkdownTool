@@ -157,3 +157,21 @@ class Md2SkillAgent:
         )
         merged_text = self.llm.ask_chatgpt_retry(prompt, self.model, self.args, ext_cont_block)
         return parse_raw_skill(merged_text)
+
+    def regen_raw_skill(
+        self, context: str, content: str, raw_text: str,
+        unknown: str, coverage: float
+    ) -> Optional[RawSkill]:
+        """根据 3-gram 覆盖率不足的情况，重新生成原始技能。"""
+        prompt = render_prompt(
+            RAW_SKILL_REGEN_PMT,
+            context=context,
+            content=content,
+            raw_text=raw_text,
+            unknown=unknown,
+            coverage=f"{coverage:.2f}",
+        )
+        new_text = self.llm.ask_chatgpt_retry(
+            prompt, self.model, self.args,
+        )
+        return parse_raw_skill(new_text)

@@ -341,9 +341,38 @@ class Md2SkillOrchestrator:
     ):
         """线程内：生成单个 chunk 的原始技能并回写。"""
         cs = chunk_skills[idx]
+        print(f'[2] 生成原始技能 {idx+1}')
         cs.raw_skills = self.agent.generate_raw_skills(
             book_type, cs.content, cs.context,
         )
+
+        # 3-gram 覆盖率检查与重试：若技能与分块的 3-gram 覆盖率不足 0.4，
+        # 则把分块、技能内容和多出来的三元组交给智能体再次生成
+        max_retry = getattr(self.args, 'retry', 3)
+        for i, rs in enumerate(cs.raw_skills):
+            for atm in range(max_retry):
+                print(f'[2] 检查原始技能 {rs.name}')
+                cov = ngram_coverage(cs.content, rs.body)
+                if cov >= 0.4: 
+                    print(f'[2] 原始技能 {rs.name} 符合要求，覆盖率 {cov}')
+                    break
+                src_set = get_ngram_set(tok_en_zh(cs.content.lower()), 3)
+                gen_set = get_ngram_set(tok_en_zh(rs.body.lower()), 3)
+                unk = sorted(gen_set - src_set & gen_set)
+                unk_str = '\n'.join(' '.join(g) for g in unk) if unk else '(无)'
+                print(
+                    f'[2] 原始技能 {rs.name} 不符合要求，覆盖率 {cov}' + 
+                    f'，以下三元组未出现在原文中：{unk_str}'
+                )
+
+                rs = self.agent.regen_raw_skill(
+                    context=cs.context,
+                    content=cs.content,
+                    raw_text=rs.raw_text,
+                    unknown=unk_str,
+                    coverage=cov,
+                )
+
         cs.generated = True
         for rs in cs.raw_skills:
             print(f'[2] {rs.name}')
