@@ -1,9 +1,0 @@
-book_type: 技术手册
-domains:
-- 技术
-core_components:
-- Markdown 处理
-- 技能提取
-skill_types:
-- 故障排查
-- 配置部署
